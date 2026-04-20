@@ -1,0 +1,2598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>JARVIS</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#050505;--bg2:#080808;--bg3:#0c0c0c;
+  --s1:#111;--s2:#161616;--s3:#1c1c1c;
+  --b1:rgba(255,255,255,0.04);--b2:rgba(255,255,255,0.08);
+  --b3:rgba(255,255,255,0.14);--b4:rgba(255,255,255,0.22);
+  --t1:#f5f5f5;--t2:#9a9a9a;--t3:#555;--t4:#303030;
+  --silver:#c0c0c0;--platinum:#e8e8e8;--chrome:#d4d4d4;
+  --ng:#39ff14;--nb:#00d4ff;--np:#bf5fff;
+  --nr:#ff3a3a;--ngold:#ffd700;
+  --nav-h:56px;--bot-h:60px;
+}
+html,body{
+  background:var(--bg);color:var(--t1);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:15px;min-height:100vh;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── TOP NAV (desktop only) ─────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:var(--nav-h);
+  background:rgba(5,5,5,0.96);
+  border-bottom:1px solid var(--b2);
+  display:flex;align-items:center;
+  padding:0 20px;gap:0;
+}
+.nav-logo{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:22px;letter-spacing:6px;color:var(--platinum);
+  flex-shrink:0;margin-right:20px;
+}
+.nav-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{
+  font-size:11px;font-weight:600;letter-spacing:0.5px;
+  padding:7px 14px;border-radius:8px;
+  border:none;background:transparent;
+  color:var(--t3);cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.ntab:hover{color:var(--t2);background:var(--b1)}
+.ntab.on{color:var(--silver);background:var(--s2);border:1px solid var(--b2)}
+.nav-r{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:12px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--t4);transition:all 0.3s}
+.live-dot.on{background:var(--ng);box-shadow:0 0 8px var(--ng)}
+.jbtn{
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid var(--b3);background:var(--s2);
+  color:var(--silver);cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;
+}
+.jbtn:hover{border-color:var(--chrome);box-shadow:0 0 16px rgba(192,192,192,0.15)}
+
+/* ── BOTTOM NAV (mobile only) ────────────────────── */
+.botnav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  height:var(--bot-h);
+  background:rgba(5,5,5,0.97);
+  border-top:1px solid var(--b2);
+  flex-direction:row;
+}
+.bnav-item{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;
+  border:none;background:transparent;
+  color:var(--t3);cursor:pointer;
+  font-size:9px;font-weight:600;letter-spacing:0.5px;
+  text-transform:uppercase;padding:8px 0;
+  transition:color 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.bnav-item.on{color:var(--silver)}
+.bnav-icon{font-size:20px;line-height:1}
+/* JARVIS button in bottom nav */
+.bnav-j{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;
+  border:none;background:transparent;cursor:pointer;
+  padding:8px 0;
+  -webkit-tap-highlight-color:transparent;
+}
+.bnav-j-circle{
+  width:36px;height:36px;border-radius:50%;
+  border:1px solid var(--b3);background:var(--s2);
+  color:var(--silver);font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── MAIN LAYOUT ─────────────────────────────────── */
+main{
+  padding-top:var(--nav-h);
+  min-height:100vh;position:relative;z-index:1;
+}
+.panel{display:none;padding:16px;max-width:1360px;margin:0 auto}
+.panel.on{display:block}
+
+/* ── GRIDS — mobile-first ────────────────────────── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.g4{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.g5{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.sidebar{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:10px}
+.mb{margin-bottom:10px}
+/* desktop upgrades */
+@media(min-width:700px){
+  .g3{grid-template-columns:1fr 1fr 1fr}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g5{grid-template-columns:repeat(5,1fr);gap:12px}
+  .panel{padding:24px 32px}
+  .mb{margin-bottom:14px}
+}
+@media(min-width:1100px){
+  .sidebar{grid-template-columns:1fr 300px;gap:14px}
+}
+
+/* ── CARD ────────────────────────────────────────── */
+.card{
+  background:var(--s1);border:1px solid var(--b2);
+  border-radius:14px;padding:16px;
+  position:relative;overflow:hidden;
+}
+.card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--b3),transparent);
+}
+.card-ng{border-color:rgba(57,255,20,0.18)}
+.card-nb{border-color:rgba(0,212,255,0.18)}
+.card-np{border-color:rgba(191,95,255,0.18)}
+.card-ns{border-color:rgba(192,192,192,0.15)}
+.card-nr{border-color:rgba(255,58,58,0.18)}
+
+/* ── STAT CARDS ──────────────────────────────────── */
+.sc{
+  background:var(--s1);border:1px solid var(--b2);
+  border-radius:14px;padding:14px 12px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.sc::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--b3),transparent);
+}
+.sn{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:36px;line-height:1;letter-spacing:1px;
+}
+@media(min-width:700px){.sn{font-size:44px}}
+.sl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-top:5px}
+.sc-ng{border-color:rgba(57,255,20,0.12)} .sc-ng .sn{color:var(--ng);text-shadow:0 0 18px rgba(57,255,20,0.3)}
+.sc-nb{border-color:rgba(0,212,255,0.12)} .sc-nb .sn{color:var(--nb);text-shadow:0 0 18px rgba(0,212,255,0.3)}
+.sc-np{border-color:rgba(191,95,255,0.12)} .sc-np .sn{color:var(--np);text-shadow:0 0 18px rgba(191,95,255,0.3)}
+.sc-ngold{border-color:rgba(255,215,0,0.12)} .sc-ngold .sn{color:var(--ngold);text-shadow:0 0 18px rgba(255,215,0,0.25)}
+.sc-nr{border-color:rgba(255,58,58,0.12)} .sc-nr .sn{color:var(--nr);text-shadow:0 0 18px rgba(255,58,58,0.25)}
+.sc-ns{border-color:rgba(192,192,192,0.1)} .sc-ns .sn{color:var(--silver);text-shadow:0 0 14px rgba(192,192,192,0.18)}
+
+/* ── HERO ────────────────────────────────────────── */
+.hero{
+  background:var(--s1);border:1px solid var(--b2);
+  border-radius:14px;padding:20px 18px;margin-bottom:10px;
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--chrome),transparent);
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,0.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.012) 1px,transparent 1px);
+  background-size:28px 28px;
+}
+.hero-glow{position:absolute;top:-80px;right:-40px;width:240px;height:240px;background:radial-gradient(circle,rgba(192,192,192,0.04),transparent 70%)}
+.hero-eye{
+  font-size:10px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:8px;display:flex;align-items:center;gap:7px;position:relative;
+  font-family:monospace;
+}
+.edot{width:5px;height:5px;border-radius:50%;background:var(--ng);box-shadow:0 0 6px var(--ng);animation:eb 2s infinite}
+@keyframes eb{0%,100%{opacity:1}50%{opacity:0.25}}
+.hero-name{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:clamp(32px,8vw,60px);
+  letter-spacing:3px;line-height:1;color:var(--platinum);position:relative;
+}
+.hero-sub{font-size:12px;color:var(--t3);letter-spacing:0.5px;margin-top:6px;position:relative}
+.hero-q{
+  margin-top:14px;padding-top:14px;border-top:1px solid var(--b2);
+  font-size:12px;color:var(--t2);font-style:italic;line-height:1.55;position:relative;
+}
+
+/* ── CARD HEADER ─────────────────────────────────── */
+.chdr{
+  font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--t3);margin-bottom:12px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+
+/* ── PRIORITIES ──────────────────────────────────── */
+.pri{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--b1);cursor:pointer}
+.pri:last-child{border-bottom:none;padding-bottom:0}
+.pri.x{opacity:0.35}
+.pri.x .pt{text-decoration:line-through}
+.pchk{
+  width:20px;height:20px;border-radius:5px;border:1.5px solid var(--b3);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;font-size:11px;transition:all 0.2s;min-width:20px;
+}
+.pri.x .pchk{background:var(--ng);border-color:var(--ng);color:#000;box-shadow:0 0 8px rgba(57,255,20,0.35)}
+.ptag{font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 6px;border-radius:4px;flex-shrink:0}
+.th{background:rgba(255,58,58,0.1);color:#ff6b6b;border:1px solid rgba(255,58,58,0.15)}
+.thi{background:rgba(255,215,0,0.08);color:var(--ngold);border:1px solid rgba(255,215,0,0.15)}
+.td{background:rgba(57,255,20,0.07);color:var(--ng);border:1px solid rgba(57,255,20,0.14)}
+.ti{background:rgba(192,192,192,0.05);color:var(--silver);border:1px solid var(--b3)}
+.pt{font-size:13px;line-height:1.45;color:var(--t2);flex:1}
+
+/* ── MILESTONES ──────────────────────────────────── */
+.ms{margin-bottom:14px}.ms:last-child{margin-bottom:0}
+.ms-row{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px}
+.ms-name{color:var(--t2);font-weight:500}
+.ms-val{font-family:monospace;font-size:10px;color:var(--t3)}
+.msbar{height:3px;background:rgba(255,255,255,0.05);border-radius:99px;overflow:hidden}
+.msfill{height:100%;border-radius:99px;transition:width 1s ease}
+
+/* ── BUTTONS ─────────────────────────────────────── */
+.btn{
+  border:none;cursor:pointer;font-weight:600;
+  border-radius:9px;transition:all 0.15s;
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:12px;
+  /* bigger touch targets */
+  min-height:36px;padding:0 14px;
+}
+.bxs{min-height:30px;padding:0 10px;font-size:10px;border-radius:7px}
+.blg{min-height:44px;padding:0 22px;font-size:14px}
+.bv{background:var(--s3);color:var(--silver);border:1px solid var(--b3)}
+.bv:hover{background:var(--s2);color:var(--platinum);border-color:var(--b4)}
+.bgh{background:var(--b1);color:var(--t2);border:1px solid var(--b1)}
+.bgh:hover{background:var(--b2);color:var(--t1)}
+.bdng{background:rgba(255,58,58,0.07);color:#ff6b6b;border:1px solid rgba(255,58,58,0.12)}
+.bneon{background:transparent;color:var(--silver);border:1px solid var(--b3)}
+.bneon:hover{border-color:var(--chrome);color:var(--platinum)}
+.btn-full{width:100%;justify-content:center}
+
+/* ── INPUTS ──────────────────────────────────────── */
+input,textarea,select{
+  background:var(--bg3);border:1px solid var(--b2);
+  border-radius:10px;color:var(--t1);
+  font-family:inherit;font-size:16px; /* 16px prevents iOS zoom */
+  padding:12px 13px;width:100%;
+  transition:border-color 0.2s;outline:none;
+  -webkit-appearance:none;
+}
+input:focus,textarea:focus,select:focus{border-color:var(--silver)}
+select option{background:var(--bg2)}
+textarea{resize:vertical;min-height:75px}
+label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:6px}
+
+/* ── AI BOX ──────────────────────────────────────── */
+.aibox{
+  background:var(--bg3);border:1px solid var(--b2);
+  border-radius:12px;padding:14px;position:relative;overflow:hidden;
+}
+.aibox::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--silver),transparent);
+  background-size:200%;animation:shim 4s linear infinite;opacity:0.35;
+}
+@keyframes shim{0%{background-position:200%}100%{background-position:-200%}}
+.aihdr{
+  font-family:monospace;font-size:9px;color:var(--t3);
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:10px;display:flex;align-items:center;gap:7px;
+}
+.aidot{width:5px;height:5px;border-radius:50%;background:var(--ng);box-shadow:0 0 5px var(--ng);animation:eb 1.5s infinite}
+
+/* ── QUEUE CARDS ─────────────────────────────────── */
+.qcard{
+  background:var(--s1);border:1px solid var(--b2);
+  border-radius:14px;padding:14px;margin-bottom:10px;
+}
+.qcard:active{border-color:var(--b3)}
+.qcard.xd{opacity:0.38}
+.qct{display:flex;align-items:flex-start;gap:10px}
+.qchk{
+  width:24px;height:24px;border-radius:6px;border:1.5px solid var(--b3);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;cursor:pointer;font-size:13px;transition:all 0.2s;min-width:24px;
+}
+.qcard.xd .qchk{background:var(--ng);border-color:var(--ng);color:#000}
+.qtitle{font-weight:600;font-size:15px;flex:1;color:var(--t1);line-height:1.3}
+.qmeta{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap;align-items:center}
+.qtype{font-size:10px;font-weight:600;letter-spacing:0.5px;padding:3px 8px;border-radius:4px}
+.qt-tr{background:rgba(57,255,20,0.07);color:var(--ng);border:1px solid rgba(57,255,20,0.12)}
+.qt-mp{background:rgba(192,192,192,0.05);color:var(--silver);border:1px solid var(--b3)}
+.qt-ph{background:rgba(0,212,255,0.07);color:var(--nb);border:1px solid rgba(0,212,255,0.12)}
+.qt-ca{background:rgba(191,95,255,0.07);color:var(--np);border:1px solid rgba(191,95,255,0.12)}
+.qt-st{background:rgba(255,215,0,0.07);color:var(--ngold);border:1px solid rgba(255,215,0,0.12)}
+.qdesc{font-size:12px;color:var(--t2);margin-top:7px;line-height:1.45}
+.qtime{margin-top:9px;padding:8px 11px;background:rgba(57,255,20,0.04);border:1px solid rgba(57,255,20,0.12);border-radius:8px;font-size:11px;color:var(--ng)}
+.qimg{margin-top:9px;border-radius:9px;overflow:hidden;max-height:180px}
+.qimg img{width:100%;height:180px;object-fit:cover}
+.qacts{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+
+/* ── CALENDAR ────────────────────────────────────── */
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:12px}
+.calhdr{text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;color:var(--t3);padding:6px 0;text-transform:uppercase}
+.calday{
+  aspect-ratio:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  border-radius:8px;font-size:13px;cursor:pointer;
+  position:relative;transition:background 0.15s;min-height:36px;
+}
+.calday:active{background:var(--b2)}
+.calday.today{background:rgba(192,192,192,0.08);color:var(--platinum);font-weight:700;border:1px solid var(--b3)}
+.calday.hev::after{content:'';position:absolute;bottom:3px;width:4px;height:4px;border-radius:50%;background:var(--ng);box-shadow:0 0 4px var(--ng)}
+.calday.om{opacity:0.18}
+.evchip{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:7px;border-radius:10px;background:var(--s2);border:1px solid var(--b2)}
+.evchip.ts{border-color:rgba(57,255,20,0.15)}
+.evchip.te{border-color:rgba(255,215,0,0.12)}
+.evchip.tp{border-color:rgba(0,212,255,0.12)}
+.evtime{font-family:monospace;font-size:11px;color:var(--t3);white-space:nowrap;flex-shrink:0}
+.evchip.ts .evtime{color:var(--ng)}
+.evchip.te .evtime{color:var(--ngold)}
+.evchip.tp .evtime{color:var(--nb)}
+.evtitle{font-size:13px;font-weight:500;flex:1;color:var(--t1)}
+.evdel{background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:4px;min-width:28px;text-align:center}
+
+/* ── FINANCE ─────────────────────────────────────── */
+.finrow{display:flex;align-items:center;padding:11px 0;border-bottom:1px solid var(--b1);gap:10px}
+.finrow:last-child{border-bottom:none}
+.finlabel{flex:1;font-size:13px;color:var(--t2)}
+.finamt{font-family:monospace;font-size:13px;font-weight:600}
+.fg{color:var(--ng);text-shadow:0 0 10px rgba(57,255,20,0.2)}
+.fr{color:var(--nr);text-shadow:0 0 10px rgba(255,58,58,0.2)}
+.findel{background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px;padding:4px;min-width:28px;text-align:center}
+
+/* ── IG FORM ─────────────────────────────────────── */
+.ig2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+
+/* ── RECO ────────────────────────────────────────── */
+.reco{background:var(--bg3);border:1px solid var(--b2);border-radius:10px;padding:12px;margin-bottom:9px;display:flex;gap:10px;align-items:flex-start}
+.reco-i{font-size:20px;flex-shrink:0;margin-top:2px}
+.reco-t{font-size:13px;font-weight:600;margin-bottom:3px;color:var(--t1)}
+.reco-s{font-size:12px;color:var(--t2);line-height:1.45}
+
+/* ── FAB ─────────────────────────────────────────── */
+#fab{
+  position:fixed;bottom:74px;right:18px;
+  width:50px;height:50px;border-radius:50%;
+  background:var(--s3);border:1px solid var(--b3);
+  color:var(--silver);font-size:22px;cursor:pointer;
+  z-index:90;box-shadow:0 4px 24px rgba(0,0,0,0.6);
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;
+}
+#fab:active{transform:scale(0.94)}
+@media(min-width:700px){
+  #fab{bottom:22px;right:22px}
+}
+
+/* ── MODAL ───────────────────────────────────────── */
+.mo{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);
+  display:none;align-items:flex-end;justify-content:center;
+}
+.mo.on{display:flex}
+.mobox{
+  width:100%;max-width:660px;
+  background:#0a0a0a;
+  border:1px solid var(--b3);
+  border-radius:20px 20px 0 0;
+  padding:18px 18px 36px;
+  max-height:90vh;overflow-y:auto;
+  animation:sup 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes sup{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modrag{width:36px;height:3px;background:var(--b3);border-radius:99px;margin:0 auto 16px}
+.motitle{font-family:'Bebas Neue',Impact,sans-serif;font-size:24px;letter-spacing:2px;margin-bottom:14px;color:var(--platinum)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.frow{margin-bottom:12px}
+.fbtn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+
+/* ── JARVIS OVERLAY ──────────────────────────────── */
+#jov{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,0.92);
+  display:none;align-items:center;justify-content:center;
+  padding:16px;
+}
+#jov.on{display:flex}
+.jmod{
+  width:100%;max-width:560px;
+  background:#080808;border:1px solid var(--b3);
+  border-radius:18px;overflow:hidden;
+  animation:jent 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes jent{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
+.jbar{height:2px;background:linear-gradient(90deg,transparent,var(--silver),var(--chrome),var(--silver),transparent);background-size:200%;animation:shim 2s linear infinite}
+.jhdr{padding:18px 20px 14px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:12px}
+.jeye{width:42px;height:42px;border-radius:50%;background:var(--s2);border:1px solid var(--b3);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--silver);flex-shrink:0}
+.jt{font-family:'Bebas Neue',Impact,sans-serif;font-size:20px;letter-spacing:3px;color:var(--platinum)}
+.jts{font-family:monospace;font-size:9px;color:var(--t3);letter-spacing:1px;margin-top:3px}
+.jx{margin-left:auto;background:none;border:none;color:var(--t3);font-size:22px;cursor:pointer;padding:4px;min-width:32px;text-align:center}
+.jbody{padding:14px 20px 24px;max-height:62vh;overflow-y:auto}
+.jline{font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:9px;padding:10px 13px;background:rgba(255,255,255,0.02);border-left:2px solid var(--b3);border-radius:0 8px 8px 0}
+.jl-s{border-color:var(--silver);color:var(--t1)}
+.jl-g{border-color:var(--ng)}
+.jl-r{border-color:var(--nr)}
+.jl-gold{border-color:var(--ngold)}
+.jlabel{font-family:monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
+.jscore{text-align:center;padding:20px 0}
+.jscoren{
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:80px;letter-spacing:2px;
+  color:var(--silver);text-shadow:0 0 40px rgba(192,192,192,0.25);line-height:1;
+}
+.jscorel{font-size:10px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;margin-top:5px}
+
+/* ── SPINNER ─────────────────────────────────────── */
+.spin{display:flex;gap:5px;align-items:center;padding:8px 0}
+.spin span{width:6px;height:6px;border-radius:50%;background:var(--t4);animation:think 1.2s ease-in-out infinite}
+.spin span:nth-child(2){animation-delay:0.2s}
+.spin span:nth-child(3){animation-delay:0.4s}
+@keyframes think{0%,100%{transform:translateY(0);opacity:0.2}50%{transform:translateY(-5px);opacity:1;background:var(--silver)}}
+
+/* ── TOAST ───────────────────────────────────────── */
+#toast{
+  position:fixed;bottom:72px;left:50%;transform:translateX(-50%);
+  background:var(--s3);border:1px solid var(--b3);
+  border-radius:10px;padding:10px 18px;
+  font-size:13px;z-index:9999;
+  opacity:0;transition:opacity 0.25s;
+  pointer-events:none;white-space:nowrap;color:var(--t1);
+  max-width:90vw;text-align:center;
+}
+#toast.on{opacity:1}
+@media(min-width:700px){
+  #toast{bottom:28px}
+}
+
+/* ── MOBILE OVERRIDES ────────────────────────────── */
+@media(max-width:699px){
+  /* show bottom nav, hide top tabs */
+  .botnav{display:flex}
+  .nav-tabs{display:none}
+  .nav-r .live-dot{display:none}
+  nav{padding:0 14px}
+  .nav-logo{margin-right:0}
+  /* push content above bottom nav */
+  main{padding-bottom:calc(var(--bot-h) + 8px)}
+  .hero{padding:16px 14px}
+  .card{padding:14px}
+  .ig2{grid-template-columns:1fr 1fr}
+  .fr2{grid-template-columns:1fr 1fr}
+}
+
+/* ── DESKTOP TWEAKS ──────────────────────────────── */
+@media(min-width:700px){
+  .card{padding:20px;border-radius:16px}
+  .sc{padding:18px 16px;border-radius:16px}
+  .hero{padding:28px 24px;border-radius:16px}
+}
+
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--b3);border-radius:99px}
+
+/* drop zone hover */
+#ig-dropzone.dz-over{border-color:var(--ng)!important;background:rgba(57,255,20,0.03)}
+/* post table scroll on mobile */
+#ig-posts-table{overflow-x:auto}
+
+/* ── TRIAL REEL PUBLISHER ────────────────────────────────────────────────── */
+.tr-card{
+  background:var(--s1);border:1px solid var(--b2);
+  border-radius:14px;padding:16px;margin-bottom:12px;
+  position:relative;overflow:hidden;transition:border-color 0.3s;
+}
+.tr-card.tr-publish{border-color:rgba(57,255,20,0.35);background:rgba(57,255,20,0.02)}
+.tr-card.tr-hold{border-color:rgba(255,215,0,0.25);background:rgba(255,215,0,0.01)}
+.tr-card.tr-skip{border-color:rgba(255,58,58,0.2);opacity:0.65}
+.tr-card.tr-done{border-color:rgba(192,192,192,0.15);opacity:0.4}
+.tr-verdict{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:10px;font-weight:700;letter-spacing:1.5px;
+  padding:4px 10px;border-radius:6px;margin-bottom:10px;
+  text-transform:uppercase;
+}
+.tv-publish{background:rgba(57,255,20,0.12);color:var(--ng);border:1px solid rgba(57,255,20,0.25)}
+.tv-hold{background:rgba(255,215,0,0.1);color:var(--ngold);border:1px solid rgba(255,215,0,0.2)}
+.tv-skip{background:rgba(255,58,58,0.1);color:var(--nr);border:1px solid rgba(255,58,58,0.15)}
+.tv-done{background:rgba(192,192,192,0.07);color:var(--silver);border:1px solid var(--b3)}
+.tv-pending{background:rgba(255,215,0,0.07);color:var(--ngold);border:1px solid rgba(255,215,0,0.15)}
+.tr-title{font-size:14px;font-weight:600;color:var(--t1);margin-bottom:6px;line-height:1.3}
+.tr-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.tr-stat{font-size:11px;color:var(--t2);display:flex;align-items:center;gap:4px}
+.tr-stat strong{color:var(--t1);font-family:monospace}
+.tr-reasoning{
+  font-size:12px;color:var(--t2);line-height:1.55;
+  padding:10px 12px;background:rgba(255,255,255,0.02);
+  border-left:2px solid var(--b3);border-radius:0 8px 8px 0;
+  margin-bottom:10px;
+}
+.tr-publish .tr-reasoning{border-color:var(--ng)}
+.tr-hold .tr-reasoning{border-color:var(--ngold)}
+.tr-skip .tr-reasoning{border-color:var(--nr)}
+.tr-best-time{
+  font-size:11px;font-weight:600;color:var(--ng);
+  display:flex;align-items:center;gap:6px;margin-bottom:10px;
+}
+.tr-actions{display:flex;gap:8px;flex-wrap:wrap}
+.tr-publish-btn{
+  background:rgba(57,255,20,0.1);color:var(--ng);
+  border:1px solid rgba(57,255,20,0.25);
+  font-size:11px;font-weight:700;letter-spacing:1px;
+  padding:7px 14px;border-radius:8px;cursor:pointer;
+  transition:all 0.2s;
+}
+.tr-publish-btn:hover{background:rgba(57,255,20,0.18)}
+.tr-done-btn{
+  background:rgba(192,192,192,0.07);color:var(--silver);
+  border:1px solid var(--b3);
+  font-size:11px;font-weight:700;letter-spacing:1px;
+  padding:7px 14px;border-radius:8px;cursor:pointer;
+}
+.tr-score-ring{
+  position:absolute;top:14px;right:14px;
+  width:44px;height:44px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  border-radius:50%;border:2px solid var(--b3);
+  background:var(--bg3);
+}
+.tr-score-n{font-family:'Bebas Neue',Impact,sans-serif;font-size:18px;line-height:1}
+.tr-score-l{font-size:7px;color:var(--t3);letter-spacing:0.5px;text-transform:uppercase}
+.tr-empty{text-align:center;padding:40px 20px;color:var(--t3);font-size:13px}
+.tr-loading{display:flex;flex-direction:column;gap:10px;padding:10px 0}
+.tr-skel{height:120px;background:linear-gradient(90deg,var(--s1) 25%,var(--s2) 50%,var(--s1) 75%);background-size:200%;animation:skel 1.5s infinite;border-radius:12px}
+@keyframes skel{0%{background-position:200%}100%{background-position:-200%}}
+.tr-filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.trf-btn{
+  font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  padding:5px 12px;border-radius:7px;border:1px solid var(--b2);
+  background:transparent;color:var(--t3);cursor:pointer;transition:all 0.2s;
+}
+.trf-btn.on{background:var(--s2);color:var(--silver);border-color:var(--b3)}
+
+/* duplicate badge */
+.dup-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:4px;background:rgba(255,215,0,0.08);color:var(--ngold);border:1px solid rgba(255,215,0,0.2);text-transform:uppercase}
+.tr-card.tr-dup{border-color:rgba(255,215,0,0.2);opacity:0.75}
+/* published-to-main badge */
+.pub-main-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:4px;background:rgba(0,212,255,0.08);color:var(--nb);border:1px solid rgba(0,212,255,0.2);text-transform:uppercase;margin-left:6px}
+/* goal milestone add button */
+.goal-add-row{display:flex;gap:8px;margin-top:14px;align-items:center}
+.ms-achieved{font-size:10px;color:var(--ng);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-left:6px}
+/* screenshot match */
+.ss-match{margin-top:8px;padding:8px 12px;background:rgba(57,255,20,0.05);border:1px solid rgba(57,255,20,0.15);border-radius:8px;font-size:11px;color:var(--ng)}
+
+/* sync indicator */
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--t4);transition:all 0.3s;display:inline-block}
+.sync-dot.syncing{background:var(--ngold);box-shadow:0 0 6px var(--ngold);animation:eblink 0.8s infinite}
+.sync-dot.synced{background:var(--ng);box-shadow:0 0 6px var(--ng)}
+.sync-dot.error{background:var(--nr)}
+.sync-status{font-family:monospace;font-size:9px;color:var(--t3);letter-spacing:1px;margin-left:4px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">JARVIS</div>
+  <div class="nav-tabs">
+    <button class="ntab on" onclick="go('cmd')" id="nt-cmd">Command</button>
+    <button class="ntab" onclick="go('ig')" id="nt-ig">Instagram</button>
+    <button class="ntab" onclick="go('q')" id="nt-q">Content</button>
+    <button class="ntab" onclick="go('cal')" id="nt-cal">Calendar</button>
+    <button class="ntab" onclick="go('fin')" id="nt-fin">Finance</button>
+  </div>
+  <div class="nav-r">
+    <div class="live-dot" id="ldot"></div>
+    <div style="display:flex;align-items:center;gap:4px"><div class="sync-dot" id="sync-dot"></div><span class="sync-status" id="sync-status" style="cursor:pointer" onclick="forcePull()" title="Tap to force sync from cloud">sync</span></div>
+    <button class="jbtn" onclick="openJ()" title="JARVIS Daily Brief">&#9651;</button>
+  </div>
+</nav>
+
+<!-- BOTTOM NAV — mobile only -->
+<div class="botnav">
+  <button class="bnav-item on" onclick="go('cmd')" id="bn-cmd">
+    <span class="bnav-icon">&#8962;</span>
+    <span>Command</span>
+  </button>
+  <button class="bnav-item" onclick="go('ig')" id="bn-ig">
+    <span class="bnav-icon">&#9678;</span>
+    <span>Instagram</span>
+  </button>
+  <button class="bnav-j" onclick="openJ()">
+    <div class="bnav-j-circle">&#9651;</div>
+  </button>
+  <button class="bnav-item" onclick="go('q')" id="bn-q">
+    <span class="bnav-icon">&#9635;</span>
+    <span>Content</span>
+  </button>
+  <button class="bnav-item" onclick="go('fin')" id="bn-fin">
+    <span class="bnav-icon">&#36;</span>
+    <span>Finance</span>
+  </button>
+</div>
+
+<main>
+
+<!-- ======= COMMAND ======= -->
+<div class="panel on" id="p-cmd">
+  <div class="hero mb">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-eye"><div class="eye-dot"></div><span id="h-status">System Online</span></div>
+    <div class="hero-name" id="h-name">READY, ELIJAH.</div>
+    <div class="hero-sub" id="h-date"></div>
+    <div style="margin-top:12px;display:flex;gap:8px;position:relative;flex-wrap:wrap">
+      <button onclick="forcePull()" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:7px 16px;border-radius:8px;background:rgba(192,192,192,0.08);border:1px solid rgba(192,192,192,0.2);color:var(--silver);cursor:pointer">&#8635; Pull from Cloud</button>
+      <button onclick="cloudSave(true)" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:7px 16px;border-radius:8px;background:rgba(57,255,20,0.07);border:1px solid rgba(57,255,20,0.18);color:var(--ng);cursor:pointer">&#8593; Push to Cloud</button>
+      <button onclick="setApiKey()" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:7px 16px;border-radius:8px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.18);color:var(--nb);cursor:pointer">&#128273; API Key</button>
+    </div>
+    <div class="hero-q" id="h-quote"></div>
+  </div>
+
+  <div class="g5 mb">
+    <div class="sc sc-np"><div class="sn" id="c-followers">1,917</div><div class="sl">Followers</div></div>
+    <div class="sc sc-ng"><div class="sn" id="c-queue">0</div><div class="sl">In Queue</div></div>
+    <div class="sc sc-ns"><div class="sn" id="c-tasks">0</div><div class="sl">Done Today</div></div>
+    <div class="sc sc-ngold"><div class="sn" id="c-posts">0</div><div class="sl">Posted / Week</div></div>
+    <div class="sc sc-ng"><div class="sn" id="c-net">$0</div><div class="sl">Net Balance</div></div>
+  </div>
+
+  <div class="sidebar">
+    <div>
+      <div class="card card-ns mb">
+        <div class="chdr">Today's Priorities <button class="btn bxs bgh" onclick="loadPri()">Refresh</button></div>
+        <div id="prilist"><div class="spin"><span></span><span></span><span></span></div></div>
+      </div>
+      <div class="card mb">
+        <div class="chdr">Today's Schedule <button class="btn bxs bgh" onclick="openM('m-ev')">+ Add</button></div>
+        <div id="todsched"></div>
+      </div>
+    </div>
+    <div class="card card-ng">
+      <div class="chdr">Goals &amp; Milestones</div>
+      <div id="goalslist"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======= INSTAGRAM ======= -->
+<div class="panel" id="p-ig">
+
+  <!-- LIVE BANNER -->
+  <div class="aibox mb" id="ig-live-banner">
+    <div class="aihdr"><div class="aidot"></div>Live Instagram Data — @iamelijah.m</div>
+    <div id="ig-live-status" style="font-size:12px;color:var(--t2)">Connecting to backend...</div>
+  </div>
+
+  <!-- UPLOAD ZONE -->
+  <div class="card card-ns mb" id="ig-upload-card">
+    <div class="chdr">Insights Scanner <span id="ig-scan-badge" style="display:none;font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:4px;background:rgba(57,255,20,0.1);color:var(--ng);border:1px solid rgba(57,255,20,0.2)">READING...</span></div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:14px;line-height:1.6">
+      Upload screenshots for deeper insights (reach, saves, shares). Live data above auto-fills follower count, likes, comments and engagement.
+    </div>
+
+    <!-- DROP ZONE -->
+    <div id="ig-dropzone"
+      onclick="el('ig-file-input').click()"
+      ondragover="event.preventDefault();this.classList.add('dz-over')"
+      ondragleave="this.classList.remove('dz-over')"
+      ondrop="event.preventDefault();this.classList.remove('dz-over');handleIGFiles(event.dataTransfer.files)"
+      style="
+        border:2px dashed var(--b3);border-radius:12px;
+        padding:28px 16px;text-align:center;cursor:pointer;
+        transition:all 0.2s;margin-bottom:12px;
+      ">
+      <div style="font-size:28px;margin-bottom:8px">&#128247;</div>
+      <div style="font-size:13px;font-weight:600;color:var(--silver);margin-bottom:4px">Tap to upload screenshots</div>
+      <div style="font-size:11px;color:var(--t3)">Account Insights &middot; Post Insights &middot; Reel Insights &middot; Story Insights</div>
+      <input type="file" id="ig-file-input" accept="image/*" multiple style="display:none" onchange="handleIGFiles(this.files)">
+    </div>
+
+    <!-- PREVIEW STRIP -->
+    <div id="ig-preview-strip" style="display:none;margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px">Uploaded Screenshots</div>
+      <div id="ig-thumbs" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    </div>
+
+    <!-- SCAN BUTTON -->
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <button class="btn bsm bneon" id="ig-scan-btn" onclick="scanAllScreenshots()" style="display:none">
+        &#9889; Scan All &amp; Auto-Fill Stats
+      </button>
+      <button class="btn bxs bgh" onclick="clearScreenshots()" id="ig-clear-btn" style="display:none">
+        Clear
+      </button>
+      <span id="ig-scan-status" style="font-size:11px;color:var(--t3)"></span>
+    </div>
+  </div>
+
+  <!-- LIVE STATS (auto-filled by AI) -->
+  <div class="g4 mb" id="ig-stats-row">
+    <div class="sc sc-np"><div class="sn" id="ig-fol">1,917</div><div class="sl">Followers</div></div>
+    <div class="sc sc-ns"><div class="sn" id="ig-posts">17</div><div class="sl">Total Posts</div></div>
+    <div class="sc sc-ng"><div class="sn" id="ig-likes">—</div><div class="sl">Avg Likes</div></div>
+    <div class="sc sc-ngold"><div class="sn" id="ig-eng">—</div><div class="sl">Eng. Rate</div></div>
+  </div>
+
+  <!-- EXTENDED STATS -->
+  <div class="g4 mb">
+    <div class="sc sc-nb"><div class="sn" id="ig-cmts">—</div><div class="sl">Avg Comments</div></div>
+    <div class="sc sc-np"><div class="sn" id="ig-shares">—</div><div class="sl">Avg Shares</div></div>
+    <div class="sc sc-ns"><div class="sn" id="ig-reach">—</div><div class="sl">Avg Reach</div></div>
+    <div class="sc sc-ngold"><div class="sn" id="ig-saves">—</div><div class="sl">Avg Saves</div></div>
+  </div>
+  <div class="g2 mb">
+    <div class="sc sc-ng"><div class="sn" id="ig-views">—</div><div class="sl">Avg Reel Views</div></div>
+    <div class="sc sc-nb"><div class="sn" id="ig-inter">—</div><div class="sl">Avg Interactions</div></div>
+  </div>
+
+  <!-- POST BREAKDOWN TABLE -->
+  <div class="card mb" id="ig-posts-card" style="display:none">
+    <div class="chdr">Post Breakdown <span id="ig-post-count" style="font-size:9px;color:var(--t3);font-weight:400;letter-spacing:0;text-transform:none"></span></div>
+    <div id="ig-posts-table"></div>
+  </div>
+
+  <!-- TRIAL REEL PUBLISHER -->
+  <div class="card mb" id="tr-publisher-card">
+    <div class="chdr">
+      Trial Reel Publisher
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn bxs bgh" onclick="detectDuplicates()">&#8800; Find Dupes</button>
+        <button class="btn bxs bgh" onclick="runTrialAnalysis()" id="tr-run-btn">&#9889; Analyze Reels</button>
+        <span id="tr-badge" style="display:none;font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:4px;background:rgba(57,255,20,0.1);color:var(--ng);border:1px solid rgba(57,255,20,0.2);align-items:center">ANALYZING...</span>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:12px;line-height:1.6">
+      JARVIS analyzes each Trial Reel using 2026 algorithm benchmarks — views, engagement rate, watch time signals, and your account averages. Waits 24–48 hours before recommending publish. You mark it done when you publish.
+    </div>
+    <div class="tr-filter-bar">
+      <button class="trf-btn on" onclick="filterTrials('all',this)">All</button>
+      <button class="trf-btn" onclick="filterTrials('publish',this)">&#9650; Publish Now</button>
+      <button class="trf-btn" onclick="filterTrials('hold',this)">Hold</button>
+      <button class="trf-btn" onclick="filterTrials('pending',this)">&#9714; Pending</button>
+      <button class="trf-btn" onclick="filterTrials('duplicate',this)">&#8800; Duplicates</button>
+      <button class="trf-btn" onclick="filterTrials('main',this)">&#9733; On Main</button>
+      <button class="trf-btn" onclick="filterTrials('done',this)">&#10003; Published</button>
+    </div>
+    <div id="tr-list"><div class="tr-empty">Hit Analyze Reels to get JARVIS recommendations on which Trial Reels to publish.</div></div>
+  </div>
+
+  <!-- AI ANALYSIS -->
+  <div class="aibox mb">
+    <div class="aihdr"><div class="aidot"></div>AI Analysis — @iamelijah.m</div>
+    <div id="ig-analysis" style="font-size:13px;color:var(--t2);line-height:1.6">
+      Upload your Instagram Insights screenshots above — AI will read them and give you a full breakdown automatically.
+    </div>
+  </div>
+
+  <!-- MANUAL OVERRIDE -->
+  <div class="card">
+    <div class="chdr" style="cursor:pointer" onclick="toggleManual()">
+      Manual Override
+      <span id="manual-toggle-icon" style="font-size:14px">&#8964;</span>
+    </div>
+    <div id="manual-fields" style="display:none">
+      <div style="font-size:11px;color:var(--t3);margin-bottom:12px;line-height:1.5">Override any stat directly if a screenshot wasn't readable.</div>
+      <div class="ig2">
+        <div class="frow"><label>Followers</label><input id="m-fol" type="number" placeholder="1917"></div>
+        <div class="frow"><label>Total Posts</label><input id="m-posts" type="number" placeholder="17"></div>
+        <div class="frow"><label>Avg Likes</label><input id="m-likes" type="number" placeholder="0"></div>
+        <div class="frow"><label>Avg Comments</label><input id="m-cmts" type="number" placeholder="0"></div>
+        <div class="frow"><label>Avg Shares</label><input id="m-shares" type="number" placeholder="0"></div>
+        <div class="frow"><label>Avg Reach</label><input id="m-reach" type="number" placeholder="0"></div>
+        <div class="frow"><label>Avg Saves</label><input id="m-saves" type="number" placeholder="0"></div>
+        <div class="frow"><label>Avg Interactions</label><input id="m-inter" type="number" placeholder="0"></div>
+      </div>
+      <button class="btn bsm bneon" onclick="saveManualIG()">Save Manual Stats</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ======= CONTENT ======= -->
+<div class="panel" id="p-q">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:14px">
+    <div>
+      <div style="font-family:'Bebas Neue';font-size:28px;letter-spacing:3px;color:var(--platinum)">Content Queue</div>
+      <div style="font-size:11px;color:var(--t3);margin-top:3px">2–3 posts/day &middot; Trial Reels for reach &middot; Publish winners to main</div>
+    </div>
+    <button class="btn bsm bneon" onclick="openM('m-idea')">+ Capture</button>
+  </div>
+
+  <div class="g4 mb">
+    <div class="sc sc-ng"><div class="sn" id="q-act">0</div><div class="sl">Active Ideas</div></div>
+    <div class="sc sc-np"><div class="sn" id="q-wk">0</div><div class="sl">This Week</div></div>
+    <div class="sc sc-ngold"><div class="sn" id="q-dn">0</div><div class="sl">Completed</div></div>
+    <div class="sc sc-ns"><div class="sn" id="q-rl">0</div><div class="sl">Reels Queued</div></div>
+  </div>
+
+  <div id="qlist"></div>
+</div>
+
+<!-- ======= CALENDAR ======= -->
+<div class="panel" id="p-cal">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+    <div style="font-family:'Bebas Neue';font-size:28px;letter-spacing:3px;color:var(--platinum)" id="cal-title"></div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <button class="btn bsm bgh" onclick="calPrev()">&#8249; Prev</button>
+      <button class="btn bsm bgh" onclick="calNext()">Next &#8250;</button>
+      <button class="btn bsm bneon" onclick="openM('m-ev')">+ Event</button>
+      <button class="btn bsm bgh" onclick="exportICS()">&#8659; iPhone .ics</button>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div>
+      <div class="card mb">
+        <div class="calgrid" id="calgrid"></div>
+      </div>
+      <div class="card">
+        <div class="chdr">Events This Month</div>
+        <div id="evlist"></div>
+      </div>
+    </div>
+    <div>
+      <div class="aibox mb">
+        <div class="aihdr"><div class="aidot"></div>JARVIS Recommendations</div>
+        <div id="calrecos"><div class="spin"><span></span><span></span><span></span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======= FINANCE ======= -->
+<div class="panel" id="p-fin">
+  <div style="font-family:'Bebas Neue';font-size:28px;letter-spacing:3px;color:var(--platinum);margin-bottom:14px">Finance Tracker</div>
+
+  <div class="g4 mb">
+    <div class="sc sc-ng"><div class="sn" id="fi-inc">$0</div><div class="sl">Monthly Income</div></div>
+    <div class="sc sc-nr"><div class="sn" id="fi-dbt">$0</div><div class="sl">Total Debt</div></div>
+    <div class="sc sc-nr"><div class="sn" id="fi-exp">$0</div><div class="sl">Monthly Expenses</div></div>
+    <div class="sc sc-ns"><div class="sn" id="fi-net">$0</div><div class="sl">Net Monthly</div></div>
+  </div>
+
+  <div class="g2 mb">
+    <div class="card card-ng">
+      <div class="chdr">Income <button class="btn bxs bgh" onclick="addFin('income')">+ Add</button></div>
+      <div id="fi-inc-l"></div>
+    </div>
+    <div class="card card-nr">
+      <div class="chdr">Credit Card Debt <button class="btn bxs bgh" onclick="addFin('debt')">+ Add Card</button></div>
+      <div id="fi-dbt-l"></div>
+      <div class="ms" style="margin-top:14px">
+        <div class="ms-row"><span class="ms-name" style="color:var(--neon-r)">Debt Payoff Progress</span><span class="ms-val" id="dbtpct">—</span></div>
+        <div class="msbar"><div class="msfill" id="dbtbar" style="width:0%;background:linear-gradient(90deg,var(--neon-r),var(--neon-gold))"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="chdr">Expenses <button class="btn bxs bgh" onclick="addFin('expense')">+ Add</button></div>
+      <div id="fi-exp-l"></div>
+    </div>
+    <div class="card card-np">
+      <div class="chdr">Savings Goals <button class="btn bxs bgh" onclick="addFin('savings')">+ Add</button></div>
+      <div id="fi-sav-l"></div>
+    </div>
+  </div>
+</div>
+
+</main>
+<button id="fab" onclick="fab()">+</button>
+<div id="toast"></div>
+
+<!-- MODALS -->
+<div class="mo" id="m-idea">
+  <div class="mobox">
+    <div class="modrag"></div>
+    <div class="motitle">Capture Idea</div>
+    <div class="frow"><label>Title / Concept *</label><input id="i-t" placeholder="What's the idea?"></div>
+    <div class="fr2">
+      <div class="frow"><label>Post Type</label>
+        <select id="i-ty">
+          <option>Trial Reel</option><option>Main Post Reel</option>
+          <option>Photo</option><option>Carousel</option><option>Story</option>
+        </select>
+      </div>
+      <div class="frow"><label>Priority</label>
+        <select id="i-pr">
+          <option value="high">High</option>
+          <option value="normal" selected>Normal</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="frow"><label>Description — vibe, hook, what you want to say</label><textarea id="i-d" placeholder="Describe the content in detail..."></textarea></div>
+    <div class="frow"><label>Inspiration Screenshot (optional)</label>
+      <input type="file" id="i-img" accept="image/*" style="padding:8px">
+      <div id="i-iprev" style="margin-top:8px"></div>
+    </div>
+    <div id="i-ianal" style="display:none" class="aibox mb">
+      <div class="aihdr"><div class="aidot"></div>Screenshot Analysis</div>
+      <div id="i-iatxt" style="font-size:13px;color:var(--t2);line-height:1.5"></div>
+    </div>
+    <div id="i-tbox" style="display:none" class="aibox mb">
+      <div class="aihdr"><div class="aidot"></div>Best Time to Post</div>
+      <div id="i-ttxt" style="font-size:13px;color:var(--t1)"></div>
+    </div>
+    <div class="fbtn-row">
+      <button class="btn bsm bgh" onclick="closeM('m-idea')">Cancel</button>
+      <button class="btn bsm bgh" onclick="genTime()">&#9889; Best Time</button>
+      <button class="btn bsm bneon" onclick="saveIdea()" style="margin-left:auto">Save to Queue</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="m-ev">
+  <div class="mobox">
+    <div class="modrag"></div>
+    <div class="motitle">Add to Calendar</div>
+    <div class="frow"><label>Title *</label><input id="e-t" placeholder="e.g. Film lifestyle reel downtown"></div>
+    <div class="frow"><label>Notes / Inspiration (JARVIS will suggest schedule)</label><textarea id="e-n" placeholder="Describe what you plan to shoot, edit, or post..."></textarea></div>
+    <div class="fr2">
+      <div class="frow"><label>Date</label><input type="date" id="e-d"></div>
+      <div class="frow"><label>Time</label><input type="time" id="e-ti"></div>
+    </div>
+    <div class="frow"><label>Type</label>
+      <select id="e-ty">
+        <option value="shoot">Shoot</option>
+        <option value="edit">Edit</option>
+        <option value="post">Post</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div id="e-aibox" style="display:none" class="aibox mb">
+      <div class="aihdr"><div class="aidot"></div>Schedule Suggestion</div>
+      <div id="e-aitxt" style="font-size:13px;color:var(--t1)"></div>
+    </div>
+    <div class="fbtn-row">
+      <button class="btn bsm bgh" onclick="closeM('m-ev')">Cancel</button>
+      <button class="btn bsm bgh" onclick="aiSched()">&#9889; JARVIS Schedule</button>
+      <button class="btn bsm bneon" onclick="saveEv()" style="margin-left:auto">Save Event</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="m-fin">
+  <div class="mobox">
+    <div class="modrag"></div>
+    <div class="motitle" id="mft">Add Item</div>
+    <input type="hidden" id="mfty">
+    <div class="frow"><label>Label</label><input id="mfl" placeholder="e.g. Chase Sapphire / Side hustle"></div>
+    <div class="fr2">
+      <div class="frow"><label>Amount ($)</label><input id="mfa" type="number" placeholder="0"></div>
+      <div class="frow" id="mfgr" style="display:none"><label>Original Total ($)</label><input id="mfg" type="number" placeholder="0"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn bsm bgh" onclick="closeM('m-fin')">Cancel</button>
+      <button class="btn bsm bneon" onclick="saveFin()" style="margin-left:auto">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="jov">
+  <div class="jmod">
+    <div class="jbar"></div>
+    <div class="jhdr">
+      <div class="jeye">&#9651;</div>
+      <div><div class="jt">JARVIS</div><div class="jts" id="jts">Initializing...</div></div>
+      <button class="jx" onclick="closeJ()">&#x2715;</button>
+    </div>
+    <div class="jbody" id="jbody"><div class="spin" style="justify-content:center;padding:40px 0"><span></span><span></span><span></span></div></div>
+  </div>
+</div>
+
+<script>
+// ── API ──────────────────────────────────────────
+const API = 'https://api.anthropic.com/v1/messages';
+const AKEY = localStorage.getItem('j_akey') || '';
+const BACKEND = 'https://jarvis-backend-production-b9d2.up.railway.app';
+const SB_URL = 'https://lmwykerkuhtsblumnkfn.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxtd3lrZXJrdWh0c2JsdW1ua2ZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjkwODIsImV4cCI6MjA5MTc0NTA4Mn0.V9WUmNf7748gnoXHltfkLezLgGSX5yvp0s-J3V7yC3A';
+const SB_USER = 'elijah'; // unique key for your data
+
+async function ai(prompt, maxT) {
+  maxT = maxT || 300;
+  const key = localStorage.getItem('j_akey') || '';
+  if(!key) { toast('Tap Settings to add your Anthropic API key'); return ''; }
+  const r = await fetch(API, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'anthropic-dangerous-direct-browser-access': 'true',
+      'x-api-key': key
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: maxT,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  const d = await r.json();
+  if (d.error) throw new Error(d.error.message);
+  return d.content.map(c => c.text || '').join('');
+}
+
+async function aiVision(prompt, b64, mime, maxT) {
+  maxT = maxT || 150;
+  const key = localStorage.getItem('j_akey') || '';
+  if(!key) { toast('Tap Settings to add your Anthropic API key'); return ''; }
+  const r = await fetch(API, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'anthropic-dangerous-direct-browser-access': 'true',
+      'x-api-key': key
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: maxT,
+      messages: [{
+        role: 'user',
+        content: [
+          { type: 'image', source: { type: 'base64', media_type: mime, data: b64 } },
+          { type: 'text', text: prompt }
+        ]
+      }]
+    })
+  });
+  const d = await r.json();
+  if (d.error) throw new Error(d.error.message);
+  return d.content.map(c => c.text || '').join('');
+}
+
+// ── STORAGE ──────────────────────────────────────
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){} if(typeof cloudSave==='function') cloudSave(false);}
+function gv(k,d){try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d}catch(e){return d}}
+
+let ideas   = gv('j6_ideas', []);
+let events  = gv('j6_events', []);
+let pri     = gv('j6_pri', []);
+let priDone = gv('j6_pd', {});
+let fin     = gv('j6_fin', {income:[],debt:[],expense:[],savings:[]});
+let igData  = gv('j6_ig', {followers:1917,posts:17,likes:0,comments:0,shares:0,reach:0,saves:0,interactions:0,plays:0,engRate:null,accountReach:null,profileViews:null});
+let calY    = new Date().getFullYear();
+let calM    = new Date().getMonth();
+
+const QUOTES = [
+  "Every post you skip is a follower you'll never meet.",
+  "The algorithm doesn't care about your excuses. Post.",
+  "Work until your bank account looks like a phone number.",
+  "Discipline is the bridge between where you are and where you're going.",
+  "While they scroll, you create. That's the difference.",
+  "Imperfect action beats perfect inaction. Ship it.",
+  "Your content is your currency. Invest daily.",
+  "The Lambo starts with the reel you post today."
+];
+
+// ── INIT ─────────────────────────────────────────
+window.addEventListener('load', async () => {
+  // Ask for API key on first open on any device
+  if(!localStorage.getItem('j_akey')) {
+    setTimeout(() => {
+      const k = prompt('Enter your Anthropic API key to activate AI features (starts with sk-ant-):');
+      if(k && k.includes('sk-ant')) {
+        localStorage.setItem('j_akey', k);
+        alert('API key saved! Refresh the page to activate all AI features.');
+      }
+    }, 1000);
+  }
+  // Load from cloud first
+  const updated = await cloudLoad();
+  updateIGDisplay();
+  if(igPostsData && igPostsData.length) renderPostsTable();
+  fetchLiveIG();
+  initCmd();
+  checkMonday();
+});
+
+function el(id){return document.getElementById(id)}
+
+// ── NAV ──────────────────────────────────────────
+function go(tab) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('on'));
+  el('p-'+tab).classList.add('on');
+  el('nt-'+tab).classList.add('on');
+  const bn = el('bn-'+tab); if(bn) bn.classList.add('on');
+  if(tab==='ig'){updateIGDisplay();fetchLiveIG();if(trialResults.length)renderTrials();}
+  if(tab==='q')   renderQ();
+  if(tab==='cal') renderCal();
+  if(tab==='fin') renderFin();
+  if(tab==='cmd') initCmd();
+}
+
+// ── COMMAND ──────────────────────────────────────
+function initCmd() {
+  const now = new Date();
+  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MOS  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const h = now.getHours();
+  el('h-name').textContent = h<12 ? 'MORNING. LET\'S BUILD.' : h<17 ? 'AFTERNOON. STAY IN IT.' : 'EVENING. GRIND HARDER.';
+  el('h-date').textContent = `${DAYS[now.getDay()]}, ${MOS[now.getMonth()]} ${now.getDate()} ${now.getFullYear()}`;
+  el('h-quote').textContent = QUOTES[now.getDay() % QUOTES.length];
+
+  const inc = fin.income.reduce((a,x)=>a+parseFloat(x.amount||0),0);
+  const dbt = fin.debt.reduce((a,x)=>a+parseFloat(x.amount||0),0);
+  const net = inc - dbt;
+
+  el('c-followers').textContent = (igData.followers||1917).toLocaleString();
+  el('c-queue').textContent = ideas.filter(i=>!i.done).length;
+  el('c-tasks').textContent = Object.values(priDone).filter(Boolean).length;
+  el('c-posts').textContent = ideas.filter(i=>i.done&&(Date.now()-i.id)<7*864e5).length;
+  const ne = el('c-net');
+  ne.textContent = (net<0?'-':'')+'$'+Math.abs(net).toLocaleString();
+  ne.parentElement.className = 'sc '+(net>=0?'sc-ng':'sc-nr');
+
+  renderGoals();
+  renderTodSched();
+  if(!pri.length) loadPri(); else renderPri();
+}
+
+// ── PRIORITIES ───────────────────────────────────
+async function loadPri() {
+  el('prilist').innerHTML = '<div class="spin"><span></span><span></span><span></span></div>';
+  const next = ideas.find(i=>!i.done);
+  const p = `You are JARVIS for @iamelijah.m, Instagram content creator. Today: ${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}. Queue: ${ideas.filter(i=>!i.done).length} ideas. Next: "${next?next.title:'none'}". Strategy: 2-3 posts/day, Trial Reels for reach, Main posts 2x/week. Generate exactly 5 priorities. Respond with JSON array only, absolutely no other text: [{"tag":"URGENT","text":"specific action"}]. Tags: URGENT, HIGH, DO IT, BRAND`;
+  try {
+    const t = await ai(p, 350);
+    const m = t.match(/\[[\s\S]*?\]/);
+    if(m){pri=JSON.parse(m[0]);sv('j6_pri',pri);}
+  } catch(e) {
+    pri = [
+      {tag:'URGENT', text:'Post your Trial Reel today — the algorithm rewards daily consistency.'},
+      {tag:'HIGH',   text:'Reply to every DM and comment within 2 hours to boost engagement rank.'},
+      {tag:'DO IT',  text: next ? `Film "${next.title}" — it\'s been sitting in your queue.` : 'Add 3 ideas to your content queue right now.'},
+      {tag:'BRAND',  text:'Plan tomorrow\'s content tonight so you never wake up without a plan.'},
+      {tag:'HIGH',   text:'Check Trial Reel analytics — publish any reel exceeding 1K views to main.'}
+    ];
+    sv('j6_pri', pri);
+  }
+  renderPri();
+}
+
+function renderPri() {
+  if(!pri.length){loadPri();return;}
+  el('prilist').innerHTML = pri.map((p,i) => {
+    const done = priDone[i];
+    const tc = {URGENT:'th',HIGH:'thi','DO IT':'td',BRAND:'ti'}[p.tag]||'ti';
+    return `<div class="pri${done?' x':''}" onclick="togPri(${i})">
+      <div class="pchk">${done?'&#10003;':''}</div>
+      <span class="ptag ${tc}">${p.tag}</span>
+      <span class="pt">${p.text}</span>
+    </div>`;
+  }).join('');
+  el('c-tasks').textContent = Object.values(priDone).filter(Boolean).length;
+}
+
+function togPri(i) {
+  priDone[i]=!priDone[i];sv('j6_pd',priDone);
+  renderPri();renderGoals();
+  el('c-tasks').textContent = Object.values(priDone).filter(Boolean).length;
+}
+
+// ── GOALS ────────────────────────────────────────
+// Dynamic milestone targets — auto-advance when hit
+const MILESTONE_FOLLOWER = [1000,2000,5000,10000,25000,50000,100000];
+const MILESTONE_POSTS    = [7,14,21];
+const MILESTONE_QUEUE    = [10,20,30,50];
+
+function nextMilestone(arr, cur) { return arr.find(t => t > cur) || arr[arr.length-1]; }
+
+let customGoals = gv('j6_cgoals', []); // [{label,target,current,color}]
+
+function getDynamicGoalDefs() {
+  const followers = igData.followers || 1917;
+  const folTarget = nextMilestone(MILESTONE_FOLLOWER, followers);
+  const postsWk   = ideas.filter(i=>i.done&&(Date.now()-i.id)<7*864e5).length;
+  const postsTarget= nextMilestone(MILESTONE_POSTS, postsWk);
+  const queueCount = ideas.filter(i=>!i.done).length;
+  const queueTarget= nextMilestone(MILESTONE_QUEUE, queueCount);
+
+  return [
+    {label:`Followers → ${folTarget.toLocaleString()}`, target:folTarget, get:()=>followers, color:'var(--np)'},
+    {label:`Posts / Week → ${postsTarget}`,             target:postsTarget, get:()=>postsWk, color:'var(--ng)'},
+    {label:'Priorities Done Today',                      target:5, get:()=>Object.values(priDone).filter(Boolean).length, color:'var(--ngold)'},
+    {label:`Ideas in Queue → ${queueTarget}`,            target:queueTarget, get:()=>queueCount, color:'var(--nb)'},
+    ...customGoals.map(g => ({
+      label: g.label,
+      target: g.target,
+      get: () => g.current || 0,
+      color: g.color || 'var(--silver)',
+      custom: true,
+      id: g.id
+    }))
+  ];
+}
+
+function renderGoals() {
+  const defs = getDynamicGoalDefs();
+  const rows = defs.map(g => {
+    const cur = g.get(), pct = Math.min(100, Math.round((cur/g.target)*100));
+    const achieved = pct >= 100;
+    const customBtn = g.custom ? `<button onclick="removeCustomGoal('${g.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:11px;margin-left:6px">✕</button>` : '';
+    return `<div class="ms">
+      <div class="ms-row">
+        <span class="ms-name">${g.label}${achieved ? '<span class="ms-achieved"> ✓ HIT</span>' : ''}${customBtn}</span>
+        <span class="ms-val">${cur.toLocaleString()} / ${g.target.toLocaleString()}</span>
+      </div>
+      <div class="msbar"><div class="msfill" style="width:${pct}%;background:${g.color};box-shadow:0 0 8px ${g.color}44"></div></div>
+    </div>`;
+  }).join('');
+
+  const addBtn = `<div class="goal-add-row">
+    <input id="cgoal-label" placeholder="Goal name..." style="flex:1;font-size:12px;padding:7px 10px">
+    <input id="cgoal-target" type="number" placeholder="Target" style="width:80px;font-size:12px;padding:7px 10px">
+    <button class="btn bxs bgh" onclick="addCustomGoal()">+ Add</button>
+  </div>`;
+
+  el('goalslist').innerHTML = rows + addBtn;
+}
+
+function addCustomGoal() {
+  const label  = (el('cgoal-label')?.value||'').trim();
+  const target = parseInt(el('cgoal-target')?.value||'0');
+  if(!label || !target) { toast('Enter a goal name and target.'); return; }
+  customGoals.push({ id: Date.now().toString(), label, target, current: 0, color: 'var(--silver)' });
+  sv('j6_cgoals', customGoals);
+  renderGoals();
+  toast('Goal added!');
+}
+
+function removeCustomGoal(id) {
+  customGoals = customGoals.filter(g => g.id !== id);
+  sv('j6_cgoals', customGoals);
+  renderGoals();
+}
+
+// ── TODAY SCHEDULE ───────────────────────────────
+function renderTodSched() {
+  const today = new Date().toISOString().split('T')[0];
+  const evs = events.filter(e=>e.date===today).sort((a,b)=>a.time.localeCompare(b.time));
+  el('todsched').innerHTML = evs.length
+    ? evs.map(e=>`<div class="evchip t${e.type.charAt(0)}"><div class="evtime">${e.time}</div><div class="evtitle">${e.title}</div></div>`).join('')
+    : '<div style="color:var(--t3);font-size:12px;padding:6px 0">Nothing scheduled. Add events in Calendar.</div>';
+}
+
+// ── INSTAGRAM SCREENSHOT SCANNER ─────────────────
+let igScreenshots = []; // {file, b64, mime, thumb}
+let igPostsData   = []; // extracted post data array
+
+function handleIGFiles(files) {
+  const arr = Array.from(files);
+  if(!arr.length) return;
+  arr.forEach(file => {
+    const url = URL.createObjectURL(file);
+    const reader = new FileReader();
+    reader.onload = e => {
+      const b64 = e.target.result.split(',')[1];
+      igScreenshots.push({file, b64, mime:file.type, thumb:url, name:file.name});
+      renderIGThumbs();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderIGThumbs() {
+  el('ig-preview-strip').style.display = 'block';
+  el('ig-scan-btn').style.display = 'inline-flex';
+  el('ig-clear-btn').style.display = 'inline-flex';
+  el('ig-thumbs').innerHTML = igScreenshots.map((s,i) => `
+    <div style="position:relative;flex-shrink:0">
+      <img src="${s.thumb}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--b3)">
+      <button onclick="removeScreenshot(${i})" style="position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;background:var(--nr);border:none;color:#fff;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">&#x2715;</button>
+      <div style="font-size:9px;color:var(--t3);margin-top:3px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</div>
+    </div>`).join('');
+  el('ig-dropzone').style.borderColor = 'rgba(57,255,20,0.3)';
+}
+
+function removeScreenshot(i) {
+  igScreenshots.splice(i,1);
+  if(!igScreenshots.length) clearScreenshots();
+  else renderIGThumbs();
+}
+
+function clearScreenshots() {
+  igScreenshots = [];
+  el('ig-preview-strip').style.display = 'none';
+  el('ig-scan-btn').style.display = 'none';
+  el('ig-clear-btn').style.display = 'none';
+  el('ig-thumbs').innerHTML = '';
+  el('ig-dropzone').style.borderColor = '';
+  el('ig-file-input').value = '';
+  el('ig-scan-status').textContent = '';
+  el('ig-scan-badge').style.display = 'none';
+}
+
+async function scanAllScreenshots() {
+  if(!igScreenshots.length){toast('Upload screenshots first.');return;}
+  el('ig-scan-badge').style.display = 'inline-block';
+  el('ig-scan-btn').disabled = true;
+  el('ig-scan-status').textContent = 'Reading screenshots...';
+
+  // Check if this looks like a single post insights screenshot (for view matching)
+  if(igScreenshots.length === 1) {
+    await matchInsightScreenshot(igScreenshots[0]);
+    return;
+  }
+
+  const prompt = `You are reading Instagram Insights screenshots for @iamelijah.m. Extract ALL visible data. For each screenshot identify: account-level data (followers, following, total posts, reach, profile views, website clicks, accounts reached, impressions) and/or individual post data (post type: Reel/Photo/Carousel/Story, likes, comments, shares, saves, reach, impressions, plays/views, interactions, engagement rate, date if visible, caption snippet if visible).
+
+Return ONLY valid JSON, no other text:
+{
+  "account": {
+    "followers": null,
+    "following": null,
+    "total_posts": null,
+    "reach": null,
+    "impressions": null,
+    "profile_views": null,
+    "website_clicks": null,
+    "accounts_reached": null
+  },
+  "posts": [
+    {
+      "type": "Reel|Photo|Carousel|Story",
+      "caption": "snippet or null",
+      "date": "date or null",
+      "likes": null,
+      "comments": null,
+      "shares": null,
+      "saves": null,
+      "reach": null,
+      "impressions": null,
+      "plays": null,
+      "interactions": null,
+      "engagement_rate": null
+    }
+  ]
+}
+If a field is not visible, use null. Numbers only — no commas or symbols in values.`;
+
+  // Process each screenshot individually then merge
+  const allResults = [];
+  for(let i=0; i<igScreenshots.length; i++){
+    const s = igScreenshots[i];
+    el('ig-scan-status').textContent = `Reading ${i+1} of ${igScreenshots.length}...`;
+    try {
+      const raw = await aiVision(prompt, s.b64, s.mime, 600);
+      const m = raw.match(/\{[\s\S]*\}/);
+      if(m) allResults.push(JSON.parse(m[0]));
+    } catch(e) {
+      console.warn('Screenshot read failed:', s.name, e);
+    }
+  }
+
+  // Merge all results
+  mergeIGResults(allResults);
+  el('ig-scan-badge').style.display = 'none';
+  el('ig-scan-btn').disabled = false;
+  el('ig-scan-status').textContent = `Done — ${igScreenshots.length} screenshot${igScreenshots.length>1?'s':''} scanned`;
+}
+
+function mergeIGResults(results) {
+  // Merge account data (take first non-null for each field)
+  const acc = {};
+  const accFields = ['followers','following','total_posts','reach','impressions','profile_views','website_clicks','accounts_reached'];
+  accFields.forEach(f => {
+    for(const r of results){
+      if(r.account && r.account[f] !== null && r.account[f] !== undefined){
+        acc[f] = parseFloat(String(r.account[f]).replace(/[^0-9.]/g,''));
+        break;
+      }
+    }
+  });
+
+  // Merge all posts arrays
+  const allPosts = [];
+  results.forEach(r => {
+    if(r.posts && Array.isArray(r.posts)){
+      r.posts.forEach(p => {
+        // Parse all numeric fields
+        const cleaned = {};
+        ['likes','comments','shares','saves','reach','impressions','plays','interactions','engagement_rate'].forEach(f=>{
+          if(p[f]!==null&&p[f]!==undefined){
+            cleaned[f]=parseFloat(String(p[f]).replace(/[^0-9.]/g,''));
+          } else {
+            cleaned[f]=null;
+          }
+        });
+        cleaned.type = p.type||'Post';
+        cleaned.caption = p.caption||null;
+        cleaned.date = p.date||null;
+        allPosts.push(cleaned);
+      });
+    }
+  });
+
+  igPostsData = allPosts;
+
+  // Calculate averages from posts
+  function avg(field){
+    const vals = allPosts.map(p=>p[field]).filter(v=>v!==null&&!isNaN(v));
+    if(!vals.length) return null;
+    return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+  }
+  function avgF(field){
+    const vals = allPosts.map(p=>p[field]).filter(v=>v!==null&&!isNaN(v));
+    if(!vals.length) return null;
+    return (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2);
+  }
+
+  const avgLikes    = avg('likes');
+  const avgCmts     = avg('comments');
+  const avgShares   = avg('shares');
+  const avgSaves    = avg('saves');
+  const avgReach    = avg('reach');
+  const avgPlays    = avg('plays');
+  const avgInter    = avg('interactions');
+  const avgEngRate  = avgF('engagement_rate');
+
+  // Followers — from account data or fallback
+  const followers = acc.followers || igData.followers || 1917;
+  const totalPosts = acc.total_posts || (acc.followers ? null : igData.posts) || igData.posts || 17;
+
+  // Calc engagement rate if not directly available
+  let engRate = avgEngRate;
+  if(!engRate && avgLikes && followers){
+    engRate = ((avgLikes/followers)*100).toFixed(2);
+  }
+
+  // Update igData
+  igData = {
+    ...igData,
+    followers,
+    posts: totalPosts,
+    likes: avgLikes || igData.likes,
+    comments: avgCmts || igData.comments,
+    shares: avgShares || igData.shares || 0,
+    reach: avgReach || igData.reach || 0,
+    saves: avgSaves || igData.saves || 0,
+    interactions: avgInter || igData.interactions || 0,
+    plays: avgPlays || igData.plays || 0,
+    engRate,
+    accountReach: acc.accounts_reached || igData.accountReach,
+    profileViews: acc.profile_views || igData.profileViews,
+  };
+  sv('j6_ig', igData);
+
+  updateIGDisplay();
+  renderPostsTable();
+  runIGAnalysis(acc, allPosts);
+  initCmd();
+  el('ldot').className='live-dot on';
+  toast(`Scanned ${igScreenshots.length} screenshot${igScreenshots.length>1?'s':''} — stats updated!`);
+}
+
+function renderPostsTable() {
+  if(!igPostsData.length){ el('ig-posts-card').style.display='none'; return; }
+  el('ig-posts-card').style.display = 'block';
+  el('ig-post-count').textContent = `${igPostsData.length} post${igPostsData.length>1?'s':''} detected`;
+
+  const typeColor = {Reel:'var(--ng)',Photo:'var(--nb)',Carousel:'var(--np)',Story:'var(--ngold)',Post:'var(--silver)'};
+  const rows = igPostsData.map(p => {
+    const tc = typeColor[p.type]||'var(--silver)';
+    const eng = p.engagement_rate ? p.engagement_rate+'%' : (p.likes&&igData.followers?((p.likes/igData.followers)*100).toFixed(2)+'%':'—');
+    const views = p.views !== null && p.views !== undefined ? p.views.toLocaleString() : '—';
+    return `<div style="display:grid;grid-template-columns:70px 1fr repeat(5,52px);gap:6px;padding:10px 0;border-bottom:1px solid var(--b1);align-items:center;font-size:11px">
+      <span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.04);color:${tc};border:1px solid ${tc}22;text-align:center">${p.type}</span>
+      <span style="color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.caption||(p.date?new Date(p.date).toLocaleDateString():'—')||'—'}</span>
+      <span style="color:var(--ng);font-family:monospace;text-align:center">${p.likes!==null?p.likes.toLocaleString():'—'}</span>
+      <span style="color:var(--nb);font-family:monospace;text-align:center">${p.views!==null&&p.views!==undefined?views:'—'}</span>
+      <span style="color:var(--t2);font-family:monospace;text-align:center">${p.comments!==null?p.comments:'—'}</span>
+      <span style="color:var(--ngold);font-family:monospace;text-align:center">${p.shares!==null?p.shares:'—'}</span>
+      <span style="color:var(--np);font-family:monospace;text-align:center">${eng}</span>
+    </div>`;
+  }).join('');
+
+  el('ig-posts-table').innerHTML = `
+    <div style="display:grid;grid-template-columns:70px 1fr repeat(5,52px);gap:6px;padding:0 0 8px;border-bottom:1px solid var(--b2)">
+      <span style="font-size:9px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase">Type</span>
+      <span style="font-size:9px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase">Caption</span>
+      <span style="font-size:9px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase;text-align:center">Likes</span>
+      <span style="font-size:9px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase;text-align:center">Views</span>
+      <span style="font-size:9px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase;text-align:center">Cmts</span>
+      <span style="font-size:9px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase;text-align:center">Shares</span>
+      <span style="font-size:9px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase;text-align:center">Eng%</span>
+    </div>
+    ${rows}`;
+}
+
+
+// ── TRIAL REEL PUBLISHER ─────────────────────────────────────────────────
+let trialResults = gv('j6_trials', []); // {id, verdict, score, reasoning, bestTime, publishedAt}
+let trialFilter = 'all';
+
+function filterTrials(f, btn) {
+  trialFilter = f;
+  document.querySelectorAll('.trf-btn').forEach(b => b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  renderTrials();
+}
+
+async function runTrialAnalysis() {
+  if(!igPostsData || !igPostsData.length) {
+    toast('No posts loaded yet — wait for live data to load first.');
+    return;
+  }
+
+  el('tr-badge').style.display = 'inline-flex';
+  el('tr-run-btn').disabled = true;
+
+  const now = Date.now();
+  const avgLikes  = igData.likes    || 56;
+  const avgViews  = igData.views    || 0;
+  const avgEng    = igData.engRate  || 2.93;
+  const followers = igData.followers|| 1917;
+
+  // Bucket all posts from last 14 days
+  const recent = igPostsData.filter(p => {
+    if(!p.date) return false;
+    const age = (now - new Date(p.date).getTime()) / 36e5; // hours
+    return age <= 336; // 14 days
+  });
+
+  const pending  = recent.filter(p => (now - new Date(p.date).getTime()) / 36e5 < 24);
+  const eligible = recent.filter(p => (now - new Date(p.date).getTime()) / 36e5 >= 24);
+
+  if(!recent.length) {
+    el('tr-list').innerHTML = '<div class="tr-empty">No posts from the last 14 days found. Make sure live Instagram data has loaded.</div>';
+    el('tr-badge').style.display = 'none';
+    el('tr-run-btn').disabled = false;
+    return;
+  }
+
+  // Show skeletons for eligible posts only
+  el('tr-list').innerHTML = '<div class="tr-loading">' + eligible.slice(0,10).map(()=>'<div class="tr-skel"></div>').join('') + '</div>';
+
+  // Add pending posts (under 24h) — but first upgrade any old PENDING posts to eligible
+  trialResults.forEach((r, i) => {
+    if(r.verdict === 'PENDING' && r.date) {
+      const age = (now - new Date(r.date).getTime()) / 36e5;
+      if(age >= 24) {
+        // Auto-upgrade to null so it gets re-analyzed this run
+        trialResults[i].verdict = null;
+      }
+    }
+  });
+
+  pending.forEach(p => {
+    const exists = trialResults.find(r => r.id === p.id);
+    if(!exists) {
+      trialResults.push({
+        ...p,
+        verdict: 'PENDING',
+        score: null,
+        reasoning: 'Posted less than 24 hours ago — JARVIS needs at least 24 hours of data to make a publish recommendation. Check back soon.',
+        bestTime: null,
+        keySignal: 'too early to analyze',
+        analyzedAt: Date.now(),
+      });
+    }
+  });
+
+  // Analyze eligible posts sequentially (not parallel — avoids rate limits)
+  const toAnalyze = eligible.slice(0, 15); // cap at 15
+  for(const post of toAnalyze) {
+    // Skip if already analyzed and verdict exists (use cached)
+    const existing = trialResults.find(r => r.id === post.id);
+    if(existing && existing.verdict && existing.verdict !== 'PENDING') continue;
+
+    const ageHours = Math.round((now - new Date(post.date).getTime()) / 36e5);
+    const reelEng  = followers ? ((post.likes / followers) * 100).toFixed(2) : 0;
+    const likesVsAvg = avgLikes ? Math.round((post.likes / avgLikes) * 100) : null;
+    const viewsVsAvg = (post.views && avgViews) ? Math.round((post.views / avgViews) * 100) : null;
+
+    const prompt = `You are JARVIS, Instagram algorithm AI for @iamelijah.m (${followers} followers, ${avgEng}% avg engagement rate, ${avgLikes} avg likes per post, ${avgViews||'unknown'} avg reel views).
+
+Analyze this ${post.type} posted ${ageHours} hours ago:
+- Likes: ${post.likes} — ${likesVsAvg ? likesVsAvg+'% of account avg' : 'avg unknown'}
+- Views/Plays: ${post.views || 'not available'} — ${viewsVsAvg ? viewsVsAvg+'% of account avg' : ''}
+- Comments: ${post.comments || 0}
+- Shares: ${post.shares || 'not available'}
+- Saves: ${post.saves || 'not available'}
+- Engagement: ${reelEng}%
+- Caption: "${(post.caption||'none').substring(0,80)}"
+- Age: ${ageHours}h
+
+2026 Instagram algorithm signals ranked by importance:
+1. Saves (strongest retention signal)
+2. Shares (distribution signal)  
+3. Views vs account avg (reach signal)
+4. Likes vs account avg (engagement signal)
+5. Comments (conversation signal)
+
+For Trial Reels: publish to main if it outperforms account averages in at least 2 key signals within 48h.
+
+Return JSON only, no other text:
+{"verdict":"PUBLISH","score":85,"reasoning":"2-3 sentences why","best_time":"Day at Time EST","key_signal":"the #1 signal"}
+
+verdict must be exactly: PUBLISH, HOLD, or SKIP`;
+
+    let result = null;
+    try {
+      const t = await ai(prompt, 220);
+      const m = t.match(/\{[\s\S]*?\}/);
+      if(m) result = JSON.parse(m[0]);
+    } catch(e) { console.warn('AI call failed for post', post.id, e.message); }
+
+    if(!result) {
+      // Pure math fallback — no AI needed
+      const score = Math.min(100, Math.round(
+        (avgLikes ? (post.likes / avgLikes) * 45 : 20) +
+        (post.views && avgViews ? (post.views / avgViews) * 35 : 15) +
+        (post.saves  ? 10 : 0) +
+        (post.shares ? 10 : 0)
+      ));
+      result = {
+        verdict: score >= 68 ? 'PUBLISH' : score >= 42 ? 'HOLD' : 'SKIP',
+        score,
+        reasoning: `${post.likes} likes (${likesVsAvg||'??'}% of your avg). ${score >= 68 ? 'Outperforming your benchmarks — publish to main.' : score >= 42 ? 'Moderate performance — give it more time to accumulate data.' : 'Below your account benchmarks — not worth publishing to main.'}`,
+        best_time: score >= 68 ? 'Tuesday–Thursday 6–8 PM EST' : null,
+        key_signal: 'likes vs account average'
+      };
+    }
+
+    const entry = {
+      ...post,
+      verdict:     result.verdict   || 'HOLD',
+      score:       result.score     || 50,
+      reasoning:   result.reasoning || '',
+      bestTime:    result.best_time || null,
+      keySignal:   result.key_signal|| '',
+      analyzedAt:  Date.now(),
+    };
+
+    const idx = trialResults.findIndex(r => r.id === post.id);
+    if(idx > -1) {
+      const wasPub = trialResults[idx].publishedAt;
+      trialResults[idx] = entry;
+      if(wasPub) trialResults[idx].publishedAt = wasPub;
+    } else {
+      trialResults.push(entry);
+    }
+  }
+
+  sv('j6_trials', trialResults);
+  el('tr-badge').style.display = 'none';
+  el('tr-run-btn').disabled = false;
+  renderTrials();
+  toast(`Done — ${toAnalyze.length} post${toAnalyze.length!==1?'s':''} analyzed!`);
+}
+
+function renderTrials() {
+  const toShow = trialResults.filter(r => {
+    if(trialFilter === 'publish')    return r.verdict === 'PUBLISH' && !r.publishedAt && !r.isDuplicate;
+    if(trialFilter === 'hold')       return r.verdict === 'HOLD' && !r.publishedAt;
+    if(trialFilter === 'pending')    return r.verdict === 'PENDING';
+    if(trialFilter === 'duplicate')  return !!r.isDuplicate;
+    if(trialFilter === 'main')       return !!r.isPublishedMain;
+    if(trialFilter === 'done')       return !!r.publishedAt;
+    return true;
+  });
+
+  if(!toShow.length) {
+    el('tr-list').innerHTML = '<div class="tr-empty">' +
+      (trialFilter === 'publish' ? 'No reels ready to publish yet.' :
+       trialFilter === 'hold'    ? 'No reels on hold.' :
+       trialFilter === 'done'    ? 'No published reels yet.' :
+       'Hit Analyze Reels to get recommendations.') + '</div>';
+    return;
+  }
+
+  // Sort: PUBLISH first, then HOLD, then SKIP, then done
+  const order = {PUBLISH:0, HOLD:1, PENDING:2, SKIP:3};
+  toShow.sort((a,b) => {
+    if(a.publishedAt && !b.publishedAt) return 1;
+    if(!a.publishedAt && b.publishedAt) return -1;
+    return (order[a.verdict]||2) - (order[b.verdict]||2) || (b.score||0) - (a.score||0);
+  });
+
+  el('tr-list').innerHTML = toShow.map(r => {
+    const isDone    = !!r.publishedAt;
+    const isPending = r.verdict === 'PENDING';
+    const isDup     = !!r.isDuplicate;
+    const isMain    = !!r.isPublishedMain;
+    const cardCls   = isDup ? 'tr-dup' : isDone ? 'tr-done' : isPending ? 'tr-hold' : r.verdict === 'PUBLISH' ? 'tr-publish' : r.verdict === 'HOLD' ? 'tr-hold' : 'tr-skip';
+    const tagCls    = isDone ? 'tv-done' : isPending ? 'tv-hold' : r.verdict === 'PUBLISH' ? 'tv-publish' : r.verdict === 'HOLD' ? 'tv-hold' : 'tv-skip';
+    const tagIcon   = isDone ? '&#10003; Published to Trial' : isPending ? '&#9714; Pending 24h' : r.verdict === 'PUBLISH' ? '&#9650; Publish Now' : r.verdict === 'HOLD' ? '&#9646; Hold' : '&#9660; Skip';
+    const scoreColor = !r.score ? 'var(--t3)' : r.score >= 70 ? 'var(--ng)' : r.score >= 45 ? 'var(--ngold)' : 'var(--nr)';
+    const typeColor = r.type==='Reel'?'var(--ng)':r.type==='Carousel'?'var(--np)':r.type==='Story'?'var(--ngold)':'var(--nb)';
+    const ageHours = r.date ? Math.round((Date.now() - new Date(r.date).getTime()) / (1000*60*60)) : '?';
+    const caption  = r.caption ? r.caption.substring(0, 60) + (r.caption.length > 60 ? '...' : '') : 'No caption';
+
+    return `<div class="tr-card ${cardCls}" id="trc-${r.id}">
+      <div class="tr-score-ring">
+        <div class="tr-score-n" style="color:${scoreColor}">${r.score||'?'}</div>
+        <div class="tr-score-l">${r.score ? 'Score' : 'Wait'}</div>
+      </div>
+      <span class="tr-verdict ${tagCls}">${tagIcon}</span>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,0.05);color:${typeColor};border:1px solid ${typeColor}33;letter-spacing:0.5px">${r.type||'Reel'}</span>
+        <span style="font-size:10px;color:var(--t3)">${r.date ? new Date(r.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : ''}</span>
+      </div>
+      <div class="tr-title">${caption}</div>
+      <div class="tr-stats">
+        <div class="tr-stat">&#9829; <strong>${r.likes||0}</strong> likes</div>
+        ${r.views ? `<div class="tr-stat">&#9654; <strong>${r.views.toLocaleString()}</strong> views</div>` : ''}
+        ${r.comments ? `<div class="tr-stat">&#128172; <strong>${r.comments}</strong> comments</div>` : ''}
+        ${r.saves ? `<div class="tr-stat">&#9873; <strong>${r.saves}</strong> saves</div>` : ''}
+        ${r.shares ? `<div class="tr-stat">&#8652; <strong>${r.shares}</strong> shares</div>` : ''}
+        <div class="tr-stat">&#128336; <strong>${ageHours}h</strong> old</div>
+      </div>
+      ${r.reasoning ? `<div class="tr-reasoning">${r.reasoning}</div>` : ''}
+      ${r.bestTime && !isDone && !isDup ? `<div class="tr-best-time">&#9889; ${r.bestTime}</div>` : ''}
+      ${r.keySignal ? `<div style="font-size:10px;color:var(--t3);margin-bottom:10px;letter-spacing:0.5px">Key signal: ${r.keySignal}</div>` : ''}
+      <div class="tr-actions" style="flex-wrap:wrap">
+        ${!isDone && !isDup && r.verdict === 'PUBLISH' ?
+          `<button class="tr-publish-btn" onclick="markPublished('${r.id}')">&#10003; Posted to Trial</button>` : ''}
+        ${!isMain && !isDup ?
+          `<button class="btn bxs bgh" onclick="markMain('${r.id}')" style="background:rgba(0,212,255,0.07);color:var(--nb);border-color:rgba(0,212,255,0.2)">&#9733; Published to Main</button>` : ''}
+        ${isMain ?
+          `<span style="font-size:11px;color:var(--nb)">&#9733; On main account ${r.mainPublishedAt ? '· '+new Date(r.mainPublishedAt).toLocaleDateString() : ''}</span>` : ''}
+        ${isDup ?
+          `<span style="font-size:11px;color:var(--ngold)">&#8800; Marked as duplicate</span>
+           <button class="btn bxs bgh" onclick="unmarkDuplicate('${r.id}')">Unmark</button>` : 
+          `<button class="btn bxs bgh" onclick="markDuplicate('${r.id}')">&#8800; Mark Duplicate</button>`}
+        ${isDone ?
+          `<span style="font-size:11px;color:var(--t3)">Trial posted ${r.publishedAt ? new Date(r.publishedAt).toLocaleDateString() : ''}</span>` : ''}
+        <button class="btn bxs bgh" onclick="reanalyzeOne('${r.id}')" style="margin-left:auto">&#8635; Re-analyze</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function markPublished(id) {
+  const idx = trialResults.findIndex(r => r.id === id);
+  if(idx > -1) {
+    trialResults[idx].publishedAt = Date.now();
+    sv('j6_trials', trialResults);
+    renderTrials();
+    toast('Marked as posted to Trial!');
+  }
+}
+
+function markMain(id) {
+  const idx = trialResults.findIndex(r => r.id === id);
+  if(idx > -1) {
+    trialResults[idx].isPublishedMain = true;
+    trialResults[idx].mainPublishedAt = Date.now();
+    sv('j6_trials', trialResults);
+    renderTrials();
+    toast('Published to main account!');
+  }
+}
+
+function markDuplicate(id) {
+  const idx = trialResults.findIndex(r => r.id === id);
+  if(idx > -1) {
+    trialResults[idx].isDuplicate = true;
+    sv('j6_trials', trialResults);
+    renderTrials();
+    toast('Marked as duplicate.');
+  }
+}
+
+function unmarkDuplicate(id) {
+  const idx = trialResults.findIndex(r => r.id === id);
+  if(idx > -1) {
+    trialResults[idx].isDuplicate = false;
+    sv('j6_trials', trialResults);
+    renderTrials();
+    toast('Removed duplicate mark.');
+  }
+}
+
+// Auto-detect duplicates by caption similarity
+function detectDuplicates() {
+  const posts = trialResults.filter(r => r.caption && !r.isDuplicate && !r.isPublishedMain);
+  let found = 0;
+  posts.forEach((a, i) => {
+    posts.slice(i+1).forEach(b => {
+      if(a.id === b.id) return;
+      // Compare captions — strip hashtags/whitespace for comparison
+      const clean = s => (s||'').replace(/#\S+/g,'').replace(/\s+/g,' ').trim().toLowerCase().substring(0,60);
+      const ca = clean(a.caption), cb = clean(b.caption);
+      // Similarity: if first 40 chars match or overall similarity > 70%
+      const sim = ca.length > 10 && cb.length > 10 && (
+        ca.substring(0,40) === cb.substring(0,40) ||
+        levenshteinSim(ca, cb) > 0.70
+      );
+      if(sim) {
+        // Mark the lower-performing one as duplicate (keep higher score)
+        const aScore = a.score || 0, bScore = b.score || 0;
+        const dupId = aScore >= bScore ? b.id : a.id;
+        const idx = trialResults.findIndex(r => r.id === dupId);
+        if(idx > -1 && !trialResults[idx].isDuplicate) {
+          trialResults[idx].isDuplicate = true;
+          found++;
+        }
+      }
+    });
+  });
+  if(found > 0) {
+    sv('j6_trials', trialResults);
+    renderTrials();
+    toast(`${found} duplicate${found>1?'s':''} detected and flagged.`);
+  } else {
+    toast('No duplicates detected.');
+  }
+}
+
+function levenshteinSim(a, b) {
+  if(!a || !b) return 0;
+  const m = a.length, n = b.length;
+  if(m===0||n===0) return 0;
+  const dp = Array.from({length:m+1},(_,i)=>Array.from({length:n+1},(_,j)=>i===0?j:j===0?i:0));
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++)
+    dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return 1 - dp[m][n]/Math.max(m,n);
+}
+
+async function reanalyzeOne(id) {
+  const idx = trialResults.findIndex(r => r.id === id);
+  if(idx < 0) return;
+
+  const post = trialResults[idx];
+  const now = Date.now();
+  const ageHours = post.date ? Math.round((now - new Date(post.date).getTime()) / 36e5) : 0;
+
+  // If under 24h, keep as pending — don't clear
+  if(ageHours < 24) {
+    toast('Still under 24 hours — check back soon.');
+    return;
+  }
+
+  // Clear verdict and show loading
+  trialResults[idx].verdict = null;
+  sv('j6_trials', trialResults);
+  renderTrials();
+  toast('Re-analyzing...');
+
+  const avgLikes  = igData.likes    || 56;
+  const avgViews  = igData.views    || 0;
+  const avgEng    = igData.engRate  || 2.93;
+  const followers = igData.followers|| 1917;
+  const reelEng   = followers ? ((post.likes / followers) * 100).toFixed(2) : 0;
+  const likesVsAvg = avgLikes ? Math.round((post.likes / avgLikes) * 100) : null;
+  const viewsVsAvg = (post.views && avgViews) ? Math.round((post.views / avgViews) * 100) : null;
+
+  const prompt = `You are JARVIS, Instagram algorithm AI for @iamelijah.m (${followers} followers, ${avgEng}% avg engagement, ${avgLikes} avg likes, ${avgViews||'unknown'} avg reel views).
+
+Re-analyze this ${post.type} posted ${ageHours} hours ago:
+- Likes: ${post.likes} — ${likesVsAvg ? likesVsAvg+'% of account avg' : '?'}
+- Views: ${post.views || 'not available'} — ${viewsVsAvg ? viewsVsAvg+'% of avg' : ''}
+- Comments: ${post.comments || 0}
+- Shares: ${post.shares || 'unknown'}
+- Saves: ${post.saves || 'unknown'}
+- Engagement: ${reelEng}%
+- Caption: "${(post.caption||'none').substring(0,80)}"
+- Age: ${ageHours}h
+
+${ageHours > 48 ? 'This post is over 48 hours old. If it has not gained strong engagement by now it likely will not. Be honest about whether publishing to main is worth it.' : 'This post is between 24-48 hours old — prime window for publish decision.'}
+
+Return JSON only: {"verdict":"PUBLISH","score":85,"reasoning":"2-3 sentences why","best_time":"Specific Day at Time EST or null","key_signal":"#1 signal"}`;
+
+  let result = null;
+  try {
+    const t = await ai(prompt, 220);
+    const m = t.match(/\{[\s\S]*?\}/);
+    if(m) result = JSON.parse(m[0]);
+  } catch(e) { console.warn('Re-analyze failed:', e.message); }
+
+  if(!result) {
+    const score = Math.min(100, Math.round(
+      (avgLikes ? (post.likes/avgLikes)*45 : 20) +
+      (post.views && avgViews ? (post.views/avgViews)*35 : 15) +
+      (post.saves ? 10 : 0) + (post.shares ? 10 : 0)
+    ));
+    result = {
+      verdict: score >= 68 ? 'PUBLISH' : score >= 42 ? 'HOLD' : 'SKIP',
+      score,
+      reasoning: `${post.likes} likes vs your ${avgLikes} avg. ${score >= 68 ? 'Outperforming — publish to main.' : score >= 42 ? 'Moderate — give it more time.' : 'Below benchmarks.'}`,
+      best_time: score >= 68 ? 'Today at 7 PM EST' : null,
+      key_signal: 'likes vs account average'
+    };
+  }
+
+  const wasPub = trialResults[idx].publishedAt;
+  trialResults[idx] = {
+    ...trialResults[idx],
+    verdict:    result.verdict   || 'HOLD',
+    score:      result.score     || 50,
+    reasoning:  result.reasoning || '',
+    bestTime:   result.best_time || null,
+    keySignal:  result.key_signal|| '',
+    analyzedAt: Date.now(),
+  };
+  if(wasPub) trialResults[idx].publishedAt = wasPub;
+
+  sv('j6_trials', trialResults);
+  renderTrials();
+  toast('Re-analysis complete!');
+}
+
+// Load saved trial results on tab switch
+// ── SCREENSHOT → POST MATCHER ────────────────────
+async function matchInsightScreenshot(screenshot) {
+  el('ig-scan-badge').style.display = 'inline-block';
+  el('ig-scan-status').textContent = 'Reading insights screenshot...';
+
+  const postList = igPostsData.map(p =>
+    'ID:' + p.id +
+    ' | Type:' + p.type +
+    ' | Date:' + (p.date ? new Date(p.date).toLocaleDateString() : '?') +
+    ' | Likes:' + p.likes +
+    ' | Caption:"' + (p.caption||'').substring(0,50) + '"'
+  ).join('; ');
+
+  const promptText = 'You are reading an Instagram Insights screenshot for @iamelijah.m. '
+    + 'Extract ALL visible metrics: views/plays, reach, likes, comments, shares, saves, interactions, watch time. '
+    + 'Then match this screenshot to ONE post from this list: ' + postList + '. '
+    + 'Match by caption text, like count, date, or any identifying info visible in the screenshot. '
+    + 'Return JSON only, no other text: '
+    + '{"matched_id":"post_id or null","match_confidence":"high/medium/low","match_reason":"why matched",'
+    + '"metrics":{"views":null,"reach":null,"likes":null,"comments":null,"shares":null,"saves":null,"interactions":null,"avg_watch_time":null}}';
+
+  try {
+    const raw = await aiVision(promptText, screenshot.b64, screenshot.mime, 400);
+    const m = raw.match(/\{[\s\S]*\}/);
+    if(!m) throw new Error('No JSON in response');
+    const result = JSON.parse(m[0]);
+
+    if(result.matched_id && result.metrics) {
+      const idx = igPostsData.findIndex(p => p.id === result.matched_id);
+      if(idx > -1) {
+        const met = result.metrics;
+        if(met.views !== null && met.views !== undefined)        igPostsData[idx].views        = met.views;
+        if(met.reach !== null && met.reach !== undefined)        igPostsData[idx].reach        = met.reach;
+        if(met.saves !== null && met.saves !== undefined)        igPostsData[idx].saves        = met.saves;
+        if(met.shares !== null && met.shares !== undefined)      igPostsData[idx].shares       = met.shares;
+        if(met.interactions !== null && met.interactions !== undefined) igPostsData[idx].interactions = met.interactions;
+
+        const trIdx = trialResults.findIndex(r => r.id === result.matched_id);
+        if(trIdx > -1) {
+          if(met.views !== null)  trialResults[trIdx].views  = met.views;
+          if(met.saves !== null)  trialResults[trIdx].saves  = met.saves;
+          if(met.shares !== null) trialResults[trIdx].shares = met.shares;
+          sv('j6_trials', trialResults);
+        }
+
+        renderPostsTable();
+        el('ig-scan-status').innerHTML = '<div class="ss-match">'
+          + '&#10003; Matched: "' + (igPostsData[idx].caption||'').substring(0,50) + '..." '
+          + '(' + result.match_confidence + ' confidence)'
+          + (met.views !== null ? ' · Views: ' + met.views : '')
+          + (met.saves !== null ? ' · Saves: ' + met.saves : '')
+          + '</div>';
+        toast('Screenshot matched and stats updated!');
+      } else {
+        el('ig-scan-status').textContent = 'Could not find matching post. Make sure live data is loaded.';
+      }
+    } else {
+      el('ig-scan-status').textContent = 'Could not match screenshot. Try uploading multiple screenshots for full account scan.';
+    }
+  } catch(e) {
+    el('ig-scan-status').textContent = 'Screenshot read failed. Try again.';
+    console.warn('Screenshot match error:', e.message);
+  }
+  el('ig-scan-badge').style.display = 'none';
+}
+
+// ── LIVE INSTAGRAM BACKEND ───────────────────────
+async function fetchLiveIG() {
+  const banner = el('ig-live-status');
+  if(banner) banner.textContent = 'Fetching live data...';
+  try {
+    const res = await fetch(BACKEND + '/ig/dashboard');
+    const d = await res.json();
+    if(d.error) throw new Error(d.error);
+
+    // Update igData from live response
+    igData = {
+      ...igData,
+      followers:    d.profile.followers,
+      posts:        d.profile.total_posts,
+      likes:        d.averages.likes,
+      comments:     d.averages.comments,
+      views:        d.averages.views,
+      reach:        d.averages.reach,
+      saves:        d.averages.saves,
+      shares:       d.averages.shares,
+      interactions: d.averages.interactions,
+      engRate:      parseFloat(d.averages.engagement_rate),
+    };
+    sv('j6_ig', igData);
+    updateIGDisplay();
+    initCmd();
+
+    // Update live banner
+    if(banner) banner.innerHTML = `Connected live &bull; ${d.profile.followers.toLocaleString()} followers &bull; ${d.averages.engagement_rate} engagement &bull; updated just now`;
+    el('ldot').className = 'live-dot on';
+
+    // Render post breakdown from live data
+    if(d.recent_posts && d.recent_posts.length) {
+      igPostsData = d.recent_posts.map(p => {
+        // Precise type mapping from Instagram API media_type field
+        let displayType;
+        const raw = (p.raw_type || p.type || '').toUpperCase();
+        if(raw === 'VIDEO' || raw === 'REELS' || raw === 'REEL') displayType = 'Reel';
+        else if(raw === 'CAROUSEL_ALBUM' || raw === 'CAROUSEL') displayType = 'Carousel';
+        else if(raw === 'IMAGE' || raw === 'PHOTO') displayType = 'Photo';
+        else if(raw === 'STORY') displayType = 'Story';
+        else {
+          // Fallback: use what backend already mapped
+          const t = p.type || '';
+          displayType = t === 'Reel' ? 'Reel' : t === 'Carousel' ? 'Carousel' : t === 'Story' ? 'Story' : 'Photo';
+        }
+        return {
+          id: p.id,
+          type: displayType,
+          raw_type: raw,
+          caption: p.caption,
+          date: p.date,
+          likes: p.likes||0,
+          comments: p.comments||0,
+          views: p.views !== undefined ? p.views : null,
+          shares: p.shares !== undefined ? p.shares : null,
+          saves: p.saves !== undefined ? p.saves : null,
+          reach: p.reach !== undefined ? p.reach : null,
+          interactions: p.interactions !== undefined ? p.interactions : null,
+          engagement_rate: igData.followers ? ((p.likes/igData.followers)*100).toFixed(2) : null
+        };
+      });
+      renderPostsTable();
+    }
+
+    // Run AI analysis with live data
+    runIGAnalysis(null, igPostsData);
+
+  } catch(e) {
+    console.warn('Live IG fetch failed:', e.message);
+    if(banner) banner.innerHTML = `<span style="color:var(--t3)">Backend unavailable — using cached data. <a href="#" onclick="fetchLiveIG()" style="color:var(--silver)">Retry</a></span>`;
+  }
+}
+
+function updateIGDisplay() {
+  el('ig-fol').textContent   = (igData.followers||0).toLocaleString();
+  el('ig-posts').textContent = igData.posts||0;
+  el('ig-likes').textContent = igData.likes ? Math.round(igData.likes).toLocaleString() : '—';
+  el('ig-cmts').textContent  = igData.comments ? Math.round(igData.comments) : '—';
+  el('ig-shares').textContent= igData.shares ? Math.round(igData.shares) : '—';
+  el('ig-reach').textContent = igData.reach ? Math.round(igData.reach).toLocaleString() : '—';
+  el('ig-saves').textContent = igData.saves ? Math.round(igData.saves) : '—';
+  const vEl = el('ig-views'); if(vEl) vEl.textContent = igData.views ? Math.round(igData.views).toLocaleString() : '—';
+  const iEl = el('ig-inter'); if(iEl) iEl.textContent = igData.interactions ? Math.round(igData.interactions).toLocaleString() : '—';
+
+  const engRate = igData.engRate || (igData.followers&&igData.likes?((igData.likes/igData.followers)*100).toFixed(2):null);
+  el('ig-eng').textContent   = engRate ? engRate+'%' : '—';
+  el('c-followers').textContent = (igData.followers||0).toLocaleString();
+
+  // Populate manual fields too
+  ['fol','posts','likes','cmts','shares','reach','saves'].forEach(k=>{
+    const inp = el('m-'+k);
+    const val = {fol:igData.followers,posts:igData.posts,likes:igData.likes,cmts:igData.comments,shares:igData.shares,reach:igData.reach,saves:igData.saves}[k];
+    if(inp && val) inp.value = Math.round(val)||'';
+  });
+}
+
+async function runIGAnalysis(acc, posts) {
+  el('ig-analysis').innerHTML = '<div class="spin"><span></span><span></span><span></span></div>';
+  const engRate = igData.engRate || (igData.followers&&igData.likes?((igData.likes/igData.followers)*100).toFixed(2):'unknown');
+  const postSummary = posts && posts.length
+    ? posts.map(p=>`${p.type}: ${p.likes||0} likes, ${p.comments||0} comments, ${p.shares||0} shares, ${p.saves||0} saves, reach ${p.reach||0}`).join(' | ')
+    : 'no individual post data';
+
+  const p = `JARVIS analyzing @iamelijah.m Instagram. Account: ${igData.followers} followers, ${igData.posts} posts. Averages: ${igData.likes} likes, ${igData.comments} comments, ${igData.shares} shares, ${igData.saves} saves, ${igData.reach} reach, ${engRate}% engagement rate. Individual posts: ${postSummary}. Strategy: Trial Reels daily for reach, main posts 2x/week, 2-3 posts/day. 2026 algorithm. Give 4 specific insights: what content type performs best, what to post more of, what to improve, and one specific action to take this week. Be direct and masculine.`;
+
+  try {
+    const t = await ai(p, 280);
+    el('ig-analysis').innerHTML = `<div style="font-size:13px;color:var(--t2);line-height:1.8;white-space:pre-line">${t}</div>`;
+  } catch(e) {
+    el('ig-analysis').textContent = `Engagement at ${engRate}%. Post Trial Reels daily — they reach non-followers without affecting main account. When a Trial Reel hits 1K+ views, publish to main immediately.`;
+  }
+}
+
+function toggleManual() {
+  const f = el('manual-fields');
+  const icon = el('manual-toggle-icon');
+  const open = f.style.display==='block';
+  f.style.display = open?'none':'block';
+  icon.textContent = open ? '\u2964' : '\u2963';
+}
+
+function saveManualIG() {
+  igData = {
+    ...igData,
+    followers: parseInt(el('m-fol').value)||igData.followers||1917,
+    posts:     parseInt(el('m-posts').value)||igData.posts||17,
+    likes:     parseFloat(el('m-likes').value)||igData.likes||0,
+    comments:  parseFloat(el('m-cmts').value)||igData.comments||0,
+    shares:    parseFloat(el('m-shares').value)||igData.shares||0,
+    reach:     parseFloat(el('m-reach').value)||igData.reach||0,
+    saves:     parseFloat(el('m-saves').value)||igData.saves||0,
+    interactions: parseFloat(el('m-inter').value)||igData.interactions||0,
+  };
+  sv('j6_ig', igData);
+  updateIGDisplay();
+  el('ldot').className='live-dot on';
+  runIGAnalysis(null,[]);
+  initCmd();
+  toast('Manual stats saved!');
+}
+
+// Token auth removed — Meta requires OAuth server setup
+
+// ── CONTENT QUEUE ────────────────────────────────
+function renderQ() {
+  const active = ideas.filter(i=>!i.done);
+  const done   = ideas.filter(i=>i.done);
+  el('q-act').textContent = active.length;
+  el('q-dn').textContent  = done.length;
+  el('q-wk').textContent  = ideas.filter(i=>(Date.now()-i.id)<7*864e5).length;
+  el('q-rl').textContent  = active.filter(i=>i.type&&i.type.includes('Reel')).length;
+
+  if(!ideas.length){
+    el('qlist').innerHTML = '<div style="color:var(--t3);font-size:13px;padding:30px;text-align:center">No ideas yet. Hit Capture to start building your queue.</div>';
+    return;
+  }
+  el('qlist').innerHTML = [...active,...done].map(idea => {
+    const tc = idea.type.includes('Trial')?'tr':idea.type.includes('Main')?'mp':idea.type.includes('Photo')?'ph':idea.type.includes('Carousel')?'ca':'st';
+    return `<div class="qcard${idea.done?' xd':''}">
+      <div class="qct">
+        <div class="qchk" onclick="togIdea(${idea.id})">${idea.done?'&#10003;':''}</div>
+        <div style="flex:1">
+          <div class="qtitle">${idea.title}</div>
+          <div class="qmeta">
+            <span class="qtype qt-${tc}">${idea.type}</span>
+            ${idea.priority==='high'?'<span style="font-size:11px;color:var(--neon-r)">&#9670; HIGH</span>':''}
+          </div>
+          ${idea.desc?`<div class="qdesc">${idea.desc}</div>`:''}
+          ${idea.bestTime?`<div class="qtime">&#9889; ${idea.bestTime}</div>`:''}
+          ${idea.img?`<div class="qimg"><img src="${idea.img}"></div>`:''}
+        </div>
+      </div>
+      <div class="qacts">
+        <button class="btn bxs bgh" onclick="ideaToCal(${idea.id})">&#128197; Schedule</button>
+        <button class="btn bxs bdng" onclick="delIdea(${idea.id})" style="margin-left:auto">Remove</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function togIdea(id){const i=ideas.findIndex(x=>x.id===id);if(i>-1){ideas[i].done=!ideas[i].done;sv('j6_ideas',ideas);renderQ();renderGoals();}}
+function delIdea(id){ideas=ideas.filter(x=>x.id!==id);sv('j6_ideas',ideas);renderQ();toast('Removed.');}
+
+function ideaToCal(id){
+  const idea=ideas.find(x=>x.id===id);if(!idea)return;
+  const td=new Date().toISOString().split('T')[0];
+  events.push({id:Date.now(),   title:`Shoot: ${idea.title}`,date:td,time:'09:00',type:'shoot'});
+  events.push({id:Date.now()+1, title:`Edit: ${idea.title}`, date:td,time:'14:00',type:'edit'});
+  events.push({id:Date.now()+2, title:`Post: ${idea.title}`, date:td,time:'18:30',type:'post'});
+  sv('j6_events',events);toast('Shoot + Edit + Post added to calendar!');go('cal');
+}
+
+async function genTime(){
+  const title=el('i-t').value.trim();
+  const type=el('i-ty').value;
+  const desc=el('i-d').value.trim();
+  el('i-tbox').style.display='block';
+  el('i-ttxt').innerHTML='<div class="spin"><span></span><span></span><span></span></div>';
+  const p=`2026 Instagram algorithm. @iamelijah.m lifestyle creator, Trinity FL (EST timezone). Post type: "${type}". Title: "${title||'content'}". Description: "${desc||'lifestyle'}". Strategy: Trial Reels daily, Main 2x/week. Give ONE best posting time. Format: "Best time: [Day] at [Time] EST — [reason, 8 words max]"`;
+  try{
+    const t=await ai(p,60);
+    el('i-ttxt').textContent=t;window._bt=t;
+  }catch(e){
+    const fb='Best time: Tuesday or Thursday at 7 PM EST — peak lifestyle engagement window';
+    el('i-ttxt').textContent=fb;window._bt=fb;
+  }
+}
+
+document.addEventListener('change', e => {
+  if(e.target.id!=='i-img')return;
+  const file=e.target.files[0];if(!file)return;
+  el('i-iprev').innerHTML=`<img src="${URL.createObjectURL(file)}" style="max-height:130px;border-radius:10px;width:100%;object-fit:cover">`;
+  (async()=>{
+    el('i-ianal').style.display='block';
+    el('i-iatxt').innerHTML='<div class="spin"><span></span><span></span><span></span></div>';
+    const b64=await new Promise(r=>{const rd=new FileReader();rd.onload=e=>r(e.target.result.split(',')[1]);rd.readAsDataURL(file);});
+    try{
+      const t=await aiVision('This is inspiration for an Instagram reel for @iamelijah.m (lifestyle creator). In 2-3 sentences: 1) Content style/format 2) The hook or standout element 3) How to execute this as a Trial Reel. Be specific and direct.',b64,file.type,150);
+      el('i-iatxt').textContent=t;
+    }catch(e2){
+      el('i-iatxt').textContent='Screenshot saved as inspiration.';
+    }
+  })();
+});
+
+async function saveIdea(){
+  const title=el('i-t').value.trim();
+  if(!title){toast('Give your idea a title.');return;}
+  const file=el('i-img').files[0];
+  let img=null;
+  if(file) img=await new Promise(r=>{const rd=new FileReader();rd.onload=e=>r(e.target.result);rd.readAsDataURL(file);});
+  ideas.push({id:Date.now(),title,type:el('i-ty').value,priority:el('i-pr').value,desc:el('i-d').value.trim(),bestTime:window._bt||null,img,done:false});
+  sv('j6_ideas',ideas);window._bt=null;
+  closeM('m-idea');
+  ['i-t','i-d'].forEach(id=>{const e=el(id);if(e)e.value='';});
+  el('i-img').value='';
+  el('i-iprev').innerHTML='';
+  el('i-ianal').style.display='none';
+  el('i-tbox').style.display='none';
+  toast('Idea saved to queue!');
+  renderQ();initCmd();
+}
+
+// ── CALENDAR ─────────────────────────────────────
+const MTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function renderCal(){
+  el('cal-title').textContent=`${MTHS[calM]} ${calY}`;
+  const first=new Date(calY,calM,1).getDay();
+  const dim=new Date(calY,calM+1,0).getDate();
+  const today=new Date();
+  let h=WD.map(d=>`<div class="calhdr">${d}</div>`).join('');
+  for(let i=0;i<first;i++){const d=new Date(calY,calM,0).getDate()-first+i+1;h+=`<div class="calday om">${d}</div>`;}
+  for(let d=1;d<=dim;d++){
+    const ds=`${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const he=events.some(e=>e.date===ds);
+    const it=d===today.getDate()&&calM===today.getMonth()&&calY===today.getFullYear();
+    h+=`<div class="calday${it?' today':''}${he?' hev':''}" onclick="clickDay('${ds}')">${d}</div>`;
+  }
+  el('calgrid').innerHTML=h;
+  renderEvList();loadCalRecos();
+}
+function calPrev(){calM--;if(calM<0){calM=11;calY--;}renderCal();}
+function calNext(){calM++;if(calM>11){calM=0;calY++;}renderCal();}
+function clickDay(ds){el('e-d').value=ds;openM('m-ev');}
+
+function renderEvList(){
+  const px=`${calY}-${String(calM+1).padStart(2,'0')}`;
+  const evs=events.filter(e=>e.date&&e.date.startsWith(px)).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
+  el('evlist').innerHTML=evs.length
+    ?evs.map(e=>`<div class="evchip t${e.type.charAt(0)}"><div class="evtime">${e.date} ${e.time}</div><div class="evtitle">${e.title}</div><button class="evdel" onclick="delEv(${e.id})">&#x2715;</button></div>`).join('')
+    :'<div style="color:var(--t3);font-size:12px;padding:8px 0">No events this month.</div>';
+}
+function delEv(id){events=events.filter(e=>e.id!==id);sv('j6_events',events);renderCal();toast('Removed.');}
+
+async function loadCalRecos(){
+  el('calrecos').innerHTML='<div class="spin"><span></span><span></span><span></span></div>';
+  const p=`JARVIS for @iamelijah.m (content creator, Trinity FL). Queue: ${ideas.filter(i=>!i.done).length} ideas. Strategy: 2-3 posts/day, Trial Reels for reach, week starts Monday. Today: ${new Date().toLocaleDateString()}. Give 3 calendar recommendations. JSON only, no other text: [{"icon":"emoji","title":"short title","desc":"one sentence why"}]`;
+  try{
+    const t=await ai(p,200);
+    const m=t.match(/\[[\s\S]*?\]/);
+    if(m){
+      const rs=JSON.parse(m[0]);
+      el('calrecos').innerHTML=rs.map(r=>`<div class="reco"><div class="reco-i">${r.icon}</div><div style="flex:1"><div class="reco-t">${r.title}</div><div class="reco-s">${r.desc}</div></div><button class="btn bxs bgh" style="flex-shrink:0;margin-left:8px" onclick="el('e-t').value='${r.title.replace(/'/g,"\\'")}';openM('m-ev')">+Add</button></div>`).join('');
+    }
+  }catch(e){
+    el('calrecos').innerHTML=`
+      <div class="reco"><div class="reco-i">&#127909;</div><div><div class="reco-t">Batch Film Day</div><div class="reco-s">Film 3-4 Trial Reels in one session — stay days ahead of schedule.</div></div></div>
+      <div class="reco"><div class="reco-i">&#128202;</div><div><div class="reco-t">Monday Analytics Review</div><div class="reco-s">Every Monday check Trial Reel performance and publish winners to main.</div></div></div>
+      <div class="reco"><div class="reco-i">&#9986;&#65039;</div><div><div class="reco-t">Wednesday Edit Block</div><div class="reco-s">Batch edit all week's content Wednesday so posting stays effortless.</div></div></div>`;
+  }
+}
+
+async function aiSched(){
+  const notes=el('e-n').value.trim();
+  if(!notes){toast('Describe what you want to do first.');return;}
+  el('e-aibox').style.display='block';
+  el('e-aitxt').innerHTML='<div class="spin"><span></span><span></span><span></span></div>';
+  try{
+    const t=await ai(`JARVIS scheduling for @iamelijah.m EST timezone. Task: "${notes}". Suggest shoot time, edit time, post time. 3 lines max.`,100);
+    el('e-aitxt').innerHTML=t.replace(/\n/g,'<br>');
+  }catch(e){
+    el('e-aitxt').textContent='Shoot: 8-10 AM. Edit: 1-3 PM. Post: 6-8 PM EST for peak reach.';
+  }
+}
+
+function saveEv(){
+  const title=el('e-t').value.trim();
+  if(!title){toast('Give the event a title.');return;}
+  events.push({id:Date.now(),title,date:el('e-d').value,time:el('e-ti').value||'09:00',type:el('e-ty').value});
+  sv('j6_events',events);
+  closeM('m-ev');toast('Event saved!');
+  renderCal();renderTodSched();
+}
+
+function exportICS(){
+  let ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//JARVIS//EN\r\n';
+  events.forEach(e=>{
+    const dt=(e.date||'').replace(/-/g,'')+'T'+(e.time||'0900').replace(':','')+'00';
+    ics+=`BEGIN:VEVENT\r\nDTSTART:${dt}\r\nSUMMARY:${e.title}\r\nEND:VEVENT\r\n`;
+  });
+  ics+='END:VCALENDAR';
+  const a=document.createElement('a');
+  a.href='data:text/calendar;charset=utf8,'+encodeURIComponent(ics);
+  a.download='JARVIS_Calendar.ics';a.click();
+  toast('Downloaded — open on iPhone to sync!');
+}
+
+// ── FINANCE ──────────────────────────────────────
+function renderFin(){
+  const inc=fin.income.reduce((a,x)=>a+parseFloat(x.amount||0),0);
+  const dbt=fin.debt.reduce((a,x)=>a+parseFloat(x.amount||0),0);
+  const exp=fin.expense.reduce((a,x)=>a+parseFloat(x.amount||0),0);
+  const net=inc-exp-dbt;
+
+  el('fi-inc').textContent='$'+inc.toLocaleString();
+  el('fi-dbt').textContent='$'+dbt.toLocaleString();
+  el('fi-exp').textContent='$'+exp.toLocaleString();
+  const ne=el('fi-net');
+  ne.textContent=(net<0?'-':'')+'$'+Math.abs(net).toLocaleString();
+  ne.parentElement.className='sc '+(net>=0?'sc-ng':'sc-nr');
+
+  function rowsHTML(items,type){
+    if(!items.length) return '<div style="color:var(--t3);font-size:12px;padding:8px 0">No items yet.</div>';
+    return items.map((it,i)=>{
+      const isRed=type==='debt'||type==='expense';
+      let extra='';
+      if(type==='debt'&&it.goal){
+        extra=`<div style="font-size:10px;color:var(--t3);margin-top:3px">Orig $${parseFloat(it.goal).toLocaleString()} &middot; Left $${parseFloat(it.amount).toLocaleString()}</div>`;
+      }
+      if(type==='savings'&&it.goal){
+        const p=Math.min(100,Math.round((it.amount/it.goal)*100));
+        extra=`<div class="msbar" style="margin-top:6px"><div class="msfill" style="width:${p}%;background:var(--neon-p)"></div></div>`;
+      }
+      return `<div class="finrow"><span class="finlabel">${it.label}</span><span class="finamt ${isRed?'fr':'fg'}">$${parseFloat(it.amount).toLocaleString()}</span>${extra}<button class="findel" onclick="delFin('${type}',${i})">&#x2715;</button></div>`;
+    }).join('');
+  }
+
+  el('fi-inc-l').innerHTML = rowsHTML(fin.income,'income');
+  el('fi-dbt-l').innerHTML = rowsHTML(fin.debt,'debt');
+  el('fi-exp-l').innerHTML = rowsHTML(fin.expense,'expense');
+  el('fi-sav-l').innerHTML = rowsHTML(fin.savings,'savings');
+
+  const origDbt=fin.debt.reduce((a,x)=>a+parseFloat(x.goal||x.amount||0),0);
+  const pct=origDbt>0?Math.min(100,Math.round(((origDbt-dbt)/origDbt)*100)):0;
+  el('dbtpct').textContent=pct+'% paid';
+  el('dbtbar').style.width=pct+'%';
+
+  const ne2=el('c-net');
+  if(ne2){ne2.textContent=(net<0?'-':'')+'$'+Math.abs(net).toLocaleString();ne2.parentElement.className='sc '+(net>=0?'sc-ng':'sc-nr');}
+}
+
+function addFin(type){
+  const titles={income:'Add Income Source',debt:'Add Credit Card / Debt',expense:'Add Monthly Expense',savings:'Add Savings Goal'};
+  el('mft').textContent=titles[type];
+  el('mfty').value=type;
+  ['mfl','mfa','mfg'].forEach(id=>{const e=el(id);if(e)e.value='';});
+  el('mfgr').style.display=(type==='debt'||type==='savings')?'block':'none';
+  openM('m-fin');
+}
+
+function saveFin(){
+  const type=el('mfty').value;
+  const label=el('mfl').value.trim();
+  const amount=el('mfa').value;
+  if(!label||!amount){toast('Fill in all fields.');return;}
+  const item={label,amount:parseFloat(amount)};
+  const g=el('mfg').value;if(g)item.goal=parseFloat(g);
+  if(!fin[type])fin[type]=[];
+  fin[type].push(item);sv('j6_fin',fin);
+  closeM('m-fin');renderFin();toast('Saved!');
+}
+
+function delFin(type,idx){fin[type].splice(idx,1);sv('j6_fin',fin);renderFin();toast('Removed.');}
+
+// ── JARVIS BRIEF ─────────────────────────────────
+async function openJ(){
+  el('jov').classList.add('on');
+  el('jts').textContent=new Date().toLocaleString();
+  el('jbody').innerHTML='<div class="spin" style="justify-content:center;padding:40px 0"><span></span><span></span><span></span></div>';
+
+  const now=new Date();
+  const isMon=now.getDay()===1;
+  const inc=fin.income.reduce((a,x)=>a+parseFloat(x.amount||0),0);
+  const dbt=fin.debt.reduce((a,x)=>a+parseFloat(x.amount||0),0);
+  const next=ideas.find(i=>!i.done);
+  const done=Object.values(priDone).filter(Boolean).length;
+
+  const p=`You are JARVIS for @iamelijah.m. ${isMon?'Monday — give full WEEK breakdown.':'Daily briefing.'}
+Stats: ${igData.followers} followers, ${ideas.filter(i=>!i.done).length} queue ideas, ${done}/5 priorities done, $${inc.toLocaleString()} income, $${dbt.toLocaleString()} debt, next content: "${next?next.title:'none'}".
+Strategy: 2-3 posts/day, Trial Reels for reach, main 2x/week. Date: ${now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}.
+${isMon?'Week plan: Mon-Sun focus, what to post each day, financial priority.':'Today: wins, gaps, one focus, one metric to move.'}
+JSON only, no other text: {"score":75,"scoreLabel":"Execution Level","wins":["win1"],"gaps":["gap1"],"focus":"one power sentence","fuel":"one quote","breakdown":"2-3 sentence analysis"}`;
+
+  try{
+    const t=await ai(p,400);
+    const m=t.match(/\{[\s\S]*\}/);
+    if(m) renderJ(JSON.parse(m[0]));
+    else renderJ(fallbackBrief());
+  }catch(e){renderJ(fallbackBrief());}
+}
+
+function fallbackBrief(){
+  return {
+    score:70,scoreLabel:'Execution Level',
+    wins:['Building the system daily','Content queue is growing'],
+    gaps:['Hit 2-3 posts per day consistently','Tackle debt with a monthly payoff target'],
+    focus:'Post your Trial Reel today. Everything else is secondary.',
+    fuel:'The version of you that quits never made it. Keep building.',
+    breakdown:`${ideas.filter(i=>!i.done).length} ideas in queue — that's potential energy sitting still. Convert it. Trial Reels cost nothing and gain you everything. Post daily.`
+  };
+}
+
+function renderJ(b){
+  el('jbody').innerHTML=`
+    <div class="jscore"><div class="jscoren">${b.score}</div><div class="jscorel">${b.scoreLabel||'Performance Score'}</div></div>
+    <div class="jline jl-s"><div class="jlabel">Situation</div>${b.breakdown}</div>
+    <div class="jline jl-g"><div class="jlabel">What's Working</div>${(b.wins||[]).map(w=>`&bull; ${w}`).join('<br>')}</div>
+    <div class="jline jl-r"><div class="jlabel">Push Harder On</div>${(b.gaps||[]).map(g=>`&bull; ${g}`).join('<br>')}</div>
+    <div class="jline jl-gold"><div class="jlabel">Today's Focus</div>${b.focus}</div>
+    <div class="jline" style="font-style:italic;border-color:var(--t4)">&ldquo;${b.fuel}&rdquo;</div>`;
+}
+
+function closeJ(){el('jov').classList.remove('on');}
+
+// ── MONDAY RESET ─────────────────────────────────
+function checkMonday(){
+  const now=new Date();
+  if(now.getDay()!==1)return;
+  const today=now.toISOString().split('T')[0];
+  if(gv('j6_reset','')===today)return;
+  sv('j6_reset',today);
+  priDone={};sv('j6_pd',priDone);
+  setTimeout(()=>{toast('New week. JARVIS briefing...');setTimeout(openJ,1200);},2000);
+}
+
+// ── MODALS ───────────────────────────────────────
+function openM(id){
+  el(id).classList.add('on');
+  if(id==='m-ev'){
+    const td=new Date().toISOString().split('T')[0];
+    if(!el('e-d').value)el('e-d').value=td;
+    el('e-aibox').style.display='none';
+  }
+}
+function closeM(id){el(id).classList.remove('on');}
+document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on');}));
+el('jov').addEventListener('click',e=>{if(e.target===el('jov'))closeJ();});
+
+// ── FAB ──────────────────────────────────────────
+function fab(){
+  const tab=document.querySelector('.panel.on').id;
+  if(tab==='p-cal')openM('m-ev');
+  else openM('m-idea');
+}
+
+// ── TOAST ────────────────────────────────────────
+let _tt;
+function toast(msg){
+  const e=el('toast');e.textContent=msg;e.classList.add('on');
+  clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('on'),3000);
+}
+
+// ══════════════════════════════════════════════════════════
+// SUPABASE SYNC
+// ══════════════════════════════════════════════════════════
+const SB_HDR = { 'Content-Type':'application/json', 'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY };
+
+function setSyncStatus(state) {
+  const dot=el('sync-dot'), txt=el('sync-status');
+  if(!dot) return;
+  dot.className='sync-dot '+state;
+  if(txt) txt.textContent = state==='syncing'?'saving...':state==='synced'?'synced':state==='error'?'offline':'sync';
+}
+
+function collectData() {
+  return { ideas, events, pri, priDone, fin, igData, trialResults, customGoals, ts: Date.now() };
+}
+
+let _st = null;
+async function cloudSave(now) {
+  clearTimeout(_st);
+  const run = async () => {
+    // Never save empty data to cloud — protect against blank browsers overwriting real data
+    const d = collectData();
+    const hasData = (d.ideas&&d.ideas.length) || (d.events&&d.events.length) ||
+                    (d.pri&&d.pri.length) || (d.igData&&d.igData.followers) ||
+                    (d.trialResults&&d.trialResults.length) ||
+                    (d.fin&&(d.fin.income||[]).length);
+    if(!hasData && !now) { setSyncStatus('synced'); return; } // skip empty saves unless forced
+    setSyncStatus('syncing');
+    try {
+      const res = await fetch(SB_URL+'/rest/v1/jarvis_sync', {
+        method:'POST',
+        headers:{...SB_HDR,'Prefer':'resolution=merge-duplicates'},
+        body:JSON.stringify({user_id:SB_USER, data:d, updated_at:new Date().toISOString()})
+      });
+      if(!res.ok) { const t=await res.text(); console.warn('Supabase save failed:',res.status,t); setSyncStatus('error'); return; }
+      setSyncStatus('synced');
+      localStorage.setItem('j6_ts', Date.now());
+      console.log('Saved to cloud.');
+    } catch(e){ console.warn('cloudSave error:',e.message); setSyncStatus('error'); }
+  };
+  if(now) await run(); else _st=setTimeout(run,1500);
+}
+
+async function cloudLoad() {
+  setSyncStatus('syncing');
+  try {
+    const res = await fetch(SB_URL+'/rest/v1/jarvis_sync?user_id=eq.'+SB_USER+'&select=data', {headers:SB_HDR});
+    if(!res.ok) { console.warn('Supabase load failed:', res.status, await res.text()); setSyncStatus('error'); return false; }
+    const rows = await res.json();
+    console.log('Supabase rows:', rows);
+    if(!Array.isArray(rows)||!rows.length){
+      // No cloud data — push local up only if we have something worth saving
+      if(ideas.length || events.length || Object.keys(fin.income||{}).length || trialResults.length) {
+        await cloudSave(true);
+      }
+      setSyncStatus('synced');
+      return false;
+    }
+    const cloud = rows[0].data;
+    const localTs = parseInt(localStorage.getItem('j6_ts')||'0');
+    if(localTs === 0 || (cloud.ts||0) > localTs) {
+            // Only restore fields that have real data — never overwrite local with empty cloud
+      if(cloud.ideas        && Array.isArray(cloud.ideas)        && cloud.ideas.length)        { ideas=cloud.ideas;               localStorage.setItem('j6_ideas',  JSON.stringify(ideas)); }
+      if(cloud.events       && Array.isArray(cloud.events)       && cloud.events.length)       { events=cloud.events;             localStorage.setItem('j6_events', JSON.stringify(events)); }
+      if(cloud.pri          && Array.isArray(cloud.pri)          && cloud.pri.length)          { pri=cloud.pri;                   localStorage.setItem('j6_pri',    JSON.stringify(pri)); }
+      if(cloud.priDone      && typeof cloud.priDone==='object')                                { priDone=cloud.priDone;           localStorage.setItem('j6_pd',     JSON.stringify(priDone)); }
+      if(cloud.fin          && typeof cloud.fin==='object')                                    { fin=cloud.fin;                   localStorage.setItem('j6_fin',    JSON.stringify(fin)); }
+      if(cloud.igData       && typeof cloud.igData==='object')                                 { igData=cloud.igData;             localStorage.setItem('j6_ig',     JSON.stringify(igData)); }
+      if(cloud.trialResults && Array.isArray(cloud.trialResults) && cloud.trialResults.length) { trialResults=cloud.trialResults; localStorage.setItem('j6_trials', JSON.stringify(trialResults)); }
+      if(cloud.customGoals  && Array.isArray(cloud.customGoals)  && cloud.customGoals.length)  { customGoals=cloud.customGoals;   localStorage.setItem('j6_cgoals', JSON.stringify(customGoals)); }
+      localStorage.setItem('j6_ts', cloud.ts);
+      setSyncStatus('synced');
+      console.log('Loaded from cloud.');
+      return true;
+    }
+    setSyncStatus('synced');
+    console.log('Local is up to date.');
+    return false;
+  } catch(e) {
+    console.warn('cloudLoad error:', e.message);
+    setSyncStatus('error');
+    return false;
+  }
+}
+
+// sv() auto-syncs via cloudSave when defined
+
+
+// Force pull from cloud — tap sync text in nav to trigger
+async function forcePull() {
+  setSyncStatus('syncing');
+  try {
+    const res = await fetch(SB_URL+'/rest/v1/jarvis_sync?user_id=eq.'+SB_USER+'&select=data', {headers:SB_HDR});
+    if(!res.ok) { setSyncStatus('error'); return; }
+    const rows = await res.json();
+    if(!Array.isArray(rows)||!rows.length) { toast('No cloud data found.'); setSyncStatus('synced'); return; }
+    const cloud = rows[0].data;
+    if(cloud.ideas        && cloud.ideas.length)        { ideas=cloud.ideas;               localStorage.setItem('j6_ideas',  JSON.stringify(ideas)); }
+    if(cloud.events       && cloud.events.length)       { events=cloud.events;             localStorage.setItem('j6_events', JSON.stringify(events)); }
+    if(cloud.pri          && cloud.pri.length)          { pri=cloud.pri;                   localStorage.setItem('j6_pri',    JSON.stringify(pri)); }
+    if(cloud.priDone)                                   { priDone=cloud.priDone;           localStorage.setItem('j6_pd',     JSON.stringify(priDone)); }
+    if(cloud.fin          && cloud.fin.income)          { fin=cloud.fin;                   localStorage.setItem('j6_fin',    JSON.stringify(fin)); }
+    if(cloud.igData       && cloud.igData.followers)    { igData=cloud.igData;             localStorage.setItem('j6_ig',     JSON.stringify(igData)); }
+    if(cloud.trialResults && cloud.trialResults.length) { trialResults=cloud.trialResults; localStorage.setItem('j6_trials', JSON.stringify(trialResults)); }
+    if(cloud.customGoals  && cloud.customGoals.length)  { customGoals=cloud.customGoals;   localStorage.setItem('j6_cgoals', JSON.stringify(customGoals)); }
+    if(cloud.ts) localStorage.setItem('j6_ts', cloud.ts);
+    setSyncStatus('synced');
+    initCmd(); renderQ(); renderFin();
+    toast('Synced from cloud!');
+  } catch(e) { setSyncStatus('error'); toast('Sync failed — check connection.'); }
+}
+
+
+function setApiKey() {
+  const current = localStorage.getItem('j_akey') || '';
+  const k = prompt('Paste your Anthropic API key (sk-ant-...):', current);
+  if(k && k.includes('sk-ant')) {
+    localStorage.setItem('j_akey', k);
+    toast('API key saved! AI features are now active.');
+  } else if(k !== null) {
+    toast('Invalid key — must start with sk-ant-');
+  }
+}
+
+</script>
+</body>
+</html>
