@@ -517,6 +517,57 @@ label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:upperca
   font-size:11px;font-weight:600;color:var(--ng);
   display:flex;align-items:center;gap:6px;margin-bottom:10px;
 }
+.tr-schedule-btn{
+  background:rgba(139,92,246,0.12);color:var(--np);
+  border:1px solid rgba(139,92,246,0.3);
+  font-size:10px;font-weight:700;letter-spacing:0.8px;
+  padding:5px 11px;border-radius:7px;cursor:pointer;
+  transition:all 0.2s;display:flex;align-items:center;gap:5px;
+}
+.tr-schedule-btn:hover{background:rgba(139,92,246,0.22)}
+.tr-schedule-panel{
+  background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.2);
+  border-radius:10px;padding:12px;margin-bottom:10px;
+}
+.tr-schedule-panel .sch-loading{
+  text-align:center;font-size:11px;color:var(--t3);padding:8px 0;
+}
+.sch-section-title{
+  font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--np);
+  text-transform:uppercase;margin-bottom:8px;
+}
+.sch-today-slots{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.sch-slot{
+  background:rgba(57,255,20,0.08);border:1px solid rgba(57,255,20,0.25);
+  border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--ng);
+  cursor:default;
+}
+.sch-slot.sch-best{
+  background:rgba(57,255,20,0.18);border-color:rgba(57,255,20,0.5);
+  box-shadow:0 0 8px rgba(57,255,20,0.2);
+}
+.sch-slot.sch-passed{opacity:0.4;}
+.sch-week{display:flex;flex-direction:column;gap:5px;}
+.sch-day-row{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.sch-day-row:last-child{border-bottom:none;}
+.sch-day-name{
+  font-size:10px;font-weight:700;color:var(--t2);
+  min-width:36px;letter-spacing:0.3px;
+}
+.sch-day-name.sch-today-day{color:var(--ng);}
+.sch-day-times{display:flex;flex-wrap:wrap;gap:4px;flex:1;}
+.sch-day-time{
+  font-size:10px;font-weight:600;color:var(--t2);
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  border-radius:5px;padding:3px 7px;
+}
+.sch-day-time.sch-prime{color:var(--np);border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.08);}
+.sch-reason{
+  font-size:9px;color:var(--t3);margin-top:8px;font-style:italic;line-height:1.5;
+}
 .tr-actions{display:flex;gap:8px;flex-wrap:wrap}
 .tr-publish-btn{
   background:rgba(57,255,20,0.1);color:var(--ng);
@@ -746,7 +797,7 @@ label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:upperca
       </div>
     </div>
     <div style="font-size:12px;color:var(--t2);margin-bottom:12px;line-height:1.6">
-      JARVIS analyzes each Trial Reel using 2026 algorithm benchmarks — views, engagement rate, watch time signals, and your account averages. Waits 24–48 hours before recommending publish. You mark it done when you publish.
+      JARVIS auto-analyzes your Trial Reels every 4 hours. Posts under 24h show as Pending — JARVIS checks back automatically and upgrades them when ready. You mark it done when you publish.
     </div>
     <div class="tr-filter-bar">
       <button class="trf-btn on" onclick="filterTrials('all',this)">All</button>
@@ -1506,6 +1557,55 @@ function renderPostsTable() {
 
 // ── TRIAL REEL PUBLISHER ─────────────────────────────────────────────────
 let trialResults = gv('j6_trials', []); // {id, verdict, score, reasoning, bestTime, publishedAt}
+let _trialTimer = null;
+
+// Auto-analyze: runs every 30 minutes while app is open
+// Re-analyzes ALL eligible posts constantly so verdicts stay fresh
+function startAutoAnalyze() {
+  clearInterval(_trialTimer);
+
+  const runCheck = async () => {
+    if(!igPostsData || !igPostsData.length) return;
+    const now = Date.now();
+
+    const needsAnalysis = igPostsData.some(p => {
+      if(!p.date) return false;
+      const age = (now - new Date(p.date).getTime()) / 36e5;
+      if(age > 336) return false; // older than 14 days, skip
+      if(age < 24) return false;  // too new, skip
+      const ex = trialResults.find(r => r.id === p.id);
+      if(!ex || !ex.verdict || ex.verdict === 'PENDING') return true;
+      // Re-check HOLD every 30 min, SKIP every 1h, PUBLISH every 2h
+      const since = ex.analyzedAt ? (now - ex.analyzedAt) : Infinity;
+      if(ex.verdict === 'HOLD'    && since > 30*60*1000) return true;
+      if(ex.verdict === 'SKIP'    && since > 60*60*1000) return true;
+      if(ex.verdict === 'PUBLISH' && since > 2*60*60*1000) return true;
+      return false;
+    });
+
+    if(needsAnalysis) {
+      console.log('Auto-analyzing reels...');
+      // Clear stale verdicts so they get fresh analysis
+      trialResults.forEach((r, i) => {
+        if(r.verdict === 'PENDING') return; // keep pending as-is
+        const since = r.analyzedAt ? (now - r.analyzedAt) : Infinity;
+        const stale = (r.verdict === 'HOLD'    && since > 30*60*1000) ||
+                      (r.verdict === 'SKIP'    && since > 60*60*1000) ||
+                      (r.verdict === 'PUBLISH' && since > 2*60*60*1000);
+        if(stale) trialResults[i].verdict = null;
+      });
+      await runTrialAnalysis();
+      const publishReady = trialResults.filter(r => r.verdict === 'PUBLISH' && !r.publishedAt && !r.isDuplicate);
+      if(publishReady.length) {
+        toast('⚡ ' + publishReady.length + ' reel' + (publishReady.length>1?'s':'') + ' ready to publish!');
+      }
+    }
+  };
+
+  // Run immediately then every 30 minutes
+  runCheck();
+  _trialTimer = setInterval(runCheck, 30 * 60 * 1000);
+}
 let trialFilter = 'all';
 
 function filterTrials(f, btn) {
@@ -1581,6 +1681,7 @@ async function runTrialAnalysis() {
   for(const post of toAnalyze) {
     // Skip if already analyzed and verdict exists (use cached)
     const existing = trialResults.find(r => r.id === post.id);
+    // Only skip if verdict exists, is not null, and not PENDING
     if(existing && existing.verdict && existing.verdict !== 'PENDING') continue;
 
     const ageHours = Math.round((now - new Date(post.date).getTime()) / 36e5);
@@ -1610,7 +1711,7 @@ Analyze this ${post.type} posted ${ageHours} hours ago:
 For Trial Reels: publish to main if it outperforms account averages in at least 2 key signals within 48h.
 
 Return JSON only, no other text:
-{"verdict":"PUBLISH","score":85,"reasoning":"2-3 sentences why","best_time":"Day at Time EST","key_signal":"the #1 signal"}
+{"verdict":"PUBLISH","score":85,"reasoning":"2-3 sentences why","key_signal":"the #1 signal"}
 
 verdict must be exactly: PUBLISH, HOLD, or SKIP`;
 
@@ -1726,7 +1827,11 @@ function renderTrials() {
         <div class="tr-stat">&#128336; <strong>${ageHours}h</strong> old</div>
       </div>
       ${r.reasoning ? `<div class="tr-reasoning">${r.reasoning}</div>` : ''}
-      ${r.bestTime && !isDone && !isDup ? `<div class="tr-best-time">&#9889; ${r.bestTime}</div>` : ''}
+      ${!isDone && !isDup && !isPending ? `
+        <div id="sch-panel-${r.id}" style="display:none" class="tr-schedule-panel"></div>
+        <button class="tr-schedule-btn" onclick="toggleSchedule('${r.id}', this)" style="margin-bottom:10px">
+          &#128336; Best Time to Post
+        </button>` : ''}
       ${r.keySignal ? `<div style="font-size:10px;color:var(--t3);margin-bottom:10px;letter-spacing:0.5px">Key signal: ${r.keySignal}</div>` : ''}
       <div class="tr-actions" style="flex-wrap:wrap">
         ${!isDone && !isDup && r.verdict === 'PUBLISH' ?
@@ -1745,6 +1850,167 @@ function renderTrials() {
       </div>
     </div>`;
   }).join('');
+}
+
+// ── POSTING SCHEDULE GENERATOR ───────────────────────────────────────────
+const _scheduleCache = {}; // cache by reel id so we don't re-call AI on every toggle
+
+async function toggleSchedule(id, btn) {
+  const panel = document.getElementById('sch-panel-' + id);
+  if (!panel) return;
+
+  if (panel.style.display !== 'none') {
+    panel.style.display = 'none';
+    btn.innerHTML = '&#128336; Best Time to Post';
+    return;
+  }
+
+  panel.style.display = 'block';
+  btn.innerHTML = '&#128336; Hide Schedule';
+
+  // Use cached result if available
+  if (_scheduleCache[id]) {
+    renderSchedulePanel(panel, _scheduleCache[id]);
+    return;
+  }
+
+  panel.innerHTML = '<div class="sch-loading"><div class="spin"><span></span><span></span><span></span></div><div style="margin-top:8px">JARVIS analyzing optimal posting windows...</div></div>';
+
+  const r = trialResults.find(x => x.id === id);
+  if (!r) { panel.innerHTML = '<div class="sch-loading">Reel not found.</div>'; return; }
+
+  const schedule = await genPostingSchedule(r);
+  _scheduleCache[id] = schedule;
+  renderSchedulePanel(panel, schedule);
+}
+
+function renderSchedulePanel(panel, data) {
+  const now = new Date();
+  const todayIdx = now.getDay(); // 0=Sun
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const fullDayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  // Today slots
+  const todaySlots = (data.today || []).map(slot => {
+    const [h, m] = slot.time.replace(/[ap]m/i,'').split(':').map(Number);
+    const isPM = /pm/i.test(slot.time) && h !== 12;
+    const slotMins = (isPM ? h + 12 : h) * 60 + (m || 0);
+    const passed = slotMins < nowMins;
+    const isBest = slot.best === true;
+    return `<div class="sch-slot${isBest ? ' sch-best' : ''}${passed ? ' sch-passed' : ''}" title="${slot.reason || ''}">
+      ${slot.time} EST${isBest ? ' ★' : ''}
+    </div>`;
+  }).join('');
+
+  // Week rows
+  const weekRows = (data.week || []).map(day => {
+    const isToday = day.day === fullDayNames[todayIdx] || day.day === dayNames[todayIdx];
+    const timePills = (day.times || []).map((t, i) =>
+      `<span class="sch-day-time${i === 0 ? ' sch-prime' : ''}">${t}</span>`
+    ).join('');
+    return `<div class="sch-day-row">
+      <div class="sch-day-name${isToday ? ' sch-today-day' : ''}">${day.day}${isToday ? ' ●' : ''}</div>
+      <div class="sch-day-times">${timePills}</div>
+    </div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div class="sch-section-title">&#9889; Today's Best Windows</div>
+    <div class="sch-today-slots">${todaySlots || '<span style="font-size:11px;color:var(--t3)">No remaining windows today — check tomorrow.</span>'}</div>
+    <div class="sch-section-title">&#128197; This Week</div>
+    <div class="sch-week">${weekRows}</div>
+    ${data.reason ? `<div class="sch-reason">${data.reason}</div>` : ''}
+  `;
+}
+
+async function genPostingSchedule(r) {
+  const followers = igData.followers || 1917;
+  const avgEng    = igData.engRate   || 2.93;
+  const avgLikes  = igData.likes     || 56;
+  const avgViews  = igData.views     || 0;
+  const now = new Date();
+  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const todayName = dayNames[now.getDay()];
+  const currentHour = now.getHours();
+  const tz = 'EST (UTC-5)';
+
+  const reelEng = followers ? ((r.likes / followers) * 100).toFixed(2) : 0;
+  const likesVsAvg = avgLikes ? Math.round((r.likes / avgLikes) * 100) : null;
+  const viewsVsAvg = (r.views && avgViews) ? Math.round((r.views / avgViews) * 100) : null;
+  const ageHours = r.date ? Math.round((Date.now() - new Date(r.date).getTime()) / 36e5) : '?';
+
+  const prompt = `You are JARVIS, a precision Instagram strategy AI for @iamelijah.m.
+
+ACCOUNT CONTEXT:
+- Followers: ${followers} | Avg engagement: ${avgEng}% | Avg likes: ${avgLikes} | Avg views: ${avgViews || 'unknown'}
+- Creator niche: lifestyle, motivation, personal brand (Trinity FL, EST timezone)
+- Strategy: Trial Reels 2-3x/day to non-followers, publish to main 2x/week if they perform
+- Goals: grow followers, increase reach to non-followers, boost saves and shares
+
+THIS REEL'S PERFORMANCE:
+- Type: ${r.type || 'Reel'} | Verdict: ${r.verdict} | Score: ${r.score}/100
+- Likes: ${r.likes || 0} (${likesVsAvg ? likesVsAvg + '% of account avg' : 'avg unknown'})
+- Views: ${r.views || 'unknown'} (${viewsVsAvg ? viewsVsAvg + '% of avg' : ''})
+- Comments: ${r.comments || 0} | Saves: ${r.saves || 'unknown'} | Shares: ${r.shares || 'unknown'}
+- Engagement: ${reelEng}% | Age: ${ageHours}h old
+- Caption preview: "${(r.caption || 'none').substring(0, 80)}"
+
+CURRENT TIME: It is currently ${currentHour}:00 EST on ${todayName}.
+
+TASK: Generate the optimal posting schedule for THIS specific reel based on its content type, current performance signals, and 2026 Instagram algorithm patterns (peak engagement windows, when lifestyle/motivation content performs best, when non-follower reach is highest).
+
+Return ONLY valid JSON, no other text:
+{
+  "today": [
+    {"time": "7:30pm", "best": true, "reason": "peak non-follower discovery window for lifestyle content"},
+    {"time": "9:00pm", "best": false, "reason": "secondary engagement spike"}
+  ],
+  "week": [
+    {"day": "Mon", "times": ["7:00pm", "12:00pm"]},
+    {"day": "Tue", "times": ["6:30pm", "8:00pm"]},
+    {"day": "Wed", "times": ["7:00pm"]},
+    {"day": "Thu", "times": ["6:00pm", "9:00pm"]},
+    {"day": "Fri", "times": ["5:30pm", "8:30pm"]},
+    {"day": "Sat", "times": ["10:00am", "7:00pm"]},
+    {"day": "Sun", "times": ["11:00am", "6:30pm"]}
+  ],
+  "reason": "One sentence explaining the strategy behind these times for this specific reel."
+}
+
+Rules:
+- today array: only include times AFTER ${currentHour}:00 EST. If it's past 9pm, return empty array [].
+- Mark the single best time as "best": true
+- Week times must be specific (e.g. "6:45pm") not ranges
+- Tailor times to THIS reel's content type and performance — a viral reel gets different advice than a struggling one
+- All times in EST`;
+
+  try {
+    const t = await ai(prompt, 600);
+    const m = t.match(/\{[\s\S]*\}/);
+    if (m) return JSON.parse(m[0]);
+  } catch(e) {
+    console.warn('Schedule gen failed:', e.message);
+  }
+
+  // Fallback schedule
+  const remaining = [];
+  if (currentHour < 12) remaining.push({time:'12:00pm', best:false, reason:'lunch scroll window'});
+  if (currentHour < 18) remaining.push({time:'6:30pm', best:true, reason:'peak lifestyle discovery'});
+  if (currentHour < 21) remaining.push({time:'9:00pm', best:false, reason:'evening engagement spike'});
+  return {
+    today: remaining,
+    week: [
+      {day:'Mon', times:['7:00pm','12:00pm']},
+      {day:'Tue', times:['6:30pm','8:00pm']},
+      {day:'Wed', times:['7:00pm','12:30pm']},
+      {day:'Thu', times:['6:00pm','9:00pm']},
+      {day:'Fri', times:['5:30pm','8:30pm']},
+      {day:'Sat', times:['10:00am','7:00pm']},
+      {day:'Sun', times:['11:00am','6:30pm']},
+    ],
+    reason: 'Peak windows for lifestyle content reaching non-followers in EST timezone.'
+  };
 }
 
 function markPublished(id) {
@@ -1876,7 +2142,7 @@ Re-analyze this ${post.type} posted ${ageHours} hours ago:
 
 ${ageHours > 48 ? 'This post is over 48 hours old. If it has not gained strong engagement by now it likely will not. Be honest about whether publishing to main is worth it.' : 'This post is between 24-48 hours old — prime window for publish decision.'}
 
-Return JSON only: {"verdict":"PUBLISH","score":85,"reasoning":"2-3 sentences why","best_time":"Specific Day at Time EST or null","key_signal":"#1 signal"}`;
+Return JSON only: {"verdict":"PUBLISH","score":85,"reasoning":"2-3 sentences why","key_signal":"#1 signal"}`;
 
   let result = null;
   try {
@@ -2051,6 +2317,18 @@ async function fetchLiveIG() {
 
     // Run AI analysis with live data
     runIGAnalysis(null, igPostsData);
+    // Start auto-analyze timer now that we have post data
+    startAutoAnalyze();
+    // Run once immediately if there are posts needing analysis
+    const needsFirstRun = igPostsData.some(p => {
+      if(!p.date) return false;
+      const age = (Date.now() - new Date(p.date).getTime()) / 36e5;
+      if(age < 24 || age > 336) return false;
+      return !trialResults.find(r => r.id === p.id);
+    });
+    if(needsFirstRun) {
+      setTimeout(runTrialAnalysis, 1500); // slight delay after page loads
+    }
 
   } catch(e) {
     console.warn('Live IG fetch failed:', e.message);
