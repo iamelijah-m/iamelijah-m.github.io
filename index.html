@@ -107,6 +107,51 @@ nav{
 }
 .ntab:hover{color:var(--t2)}
 .ntab.on{color:var(--white);background:transparent;border-bottom:2px solid var(--or)}
+
+/* ── MOBILE HAMBURGER MENU ────────────────────────── */
+.mob-menu-btn{
+  display:none;
+  background:none;border:1px solid var(--b2);
+  color:var(--t2);cursor:pointer;
+  font-size:18px;padding:6px 10px;border-radius:6px;
+  flex-shrink:0;line-height:1;
+  -webkit-tap-highlight-color:transparent;
+}
+.mob-menu-btn.on{color:var(--white);border-color:var(--b3)}
+.mob-dropdown{
+  display:none;
+  position:fixed;top:var(--nav-h);left:0;right:0;z-index:199;
+  background:rgba(5,5,5,0.98);
+  border-bottom:1px solid var(--b2);
+  backdrop-filter:blur(20px);
+  padding:8px 14px 14px;
+  animation:dropIn 0.2s ease;
+}
+@keyframes dropIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.mob-dropdown.on{display:block}
+.mob-nav-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+}
+.mob-ntab{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  padding:12px 14px;border-radius:8px;border:none;
+  background:var(--s1);border:1px solid var(--b2);
+  color:var(--t3);cursor:pointer;text-align:left;
+  transition:all 0.15s;-webkit-tap-highlight-color:transparent;
+  display:flex;align-items:center;gap:10px;
+}
+.mob-ntab.on{color:var(--white);background:var(--s2);border-color:var(--b3)}
+.mob-ntab:active{background:var(--s3)}
+.mob-ntab-icon{font-size:18px}
+
+@media(max-width:699px){
+  .nav-tabs{display:none}
+  .mob-menu-btn{display:flex;align-items:center}
+  main{padding-top:var(--nav-h)}
+}
 .nav-r{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:12px}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--t4);transition:all 0.3s}
 .live-dot.on{background:var(--cc-green);box-shadow:0 0 6px rgba(34,197,94,0.4)}
@@ -590,11 +635,8 @@ label{
   .mobox{border-radius:16px 16px 0 0;padding:16px 16px 40px}
   .motitle{font-size:22px}
 
-  /* Nav logo smaller */
-  .nav-logo{font-size:18px;letter-spacing:4px;margin-right:12px}
-  .ntab{font-size:10px;padding:5px 10px}
-
-  /* Toggle btn */
+  /* Nav */
+  .nav-r{margin-left:auto}
   .toggle-btn{font-size:9px;padding:4px 10px}
 
   /* Sidebar stacks */
@@ -858,6 +900,7 @@ label{
     <button class="ntab" onclick="go('grind')" id="nt-grind">Grind</button>
     <button class="ntab" onclick="go('life')" id="nt-life">Life</button>
   </div>
+  <button class="mob-menu-btn" id="mob-menu-btn" onclick="toggleMobMenu()">☰</button>
   <div class="nav-r">
     <button class="toggle-btn" id="view-toggle" onclick="toggleView()" title="Toggle Simple/Detailed view">SIMPLE</button>
     <div class="live-dot" id="ldot"></div>
@@ -865,6 +908,19 @@ label{
     <button class="jbtn" onclick="openJ()" title="JARVIS Daily Brief">&#9651;</button>
   </div>
 </nav>
+
+<!-- MOBILE DROPDOWN MENU -->
+<div class="mob-dropdown" id="mob-dropdown">
+  <div class="mob-nav-grid">
+    <button class="mob-ntab on" onclick="mobGo('cmd')" id="mn-cmd"><span class="mob-ntab-icon">⌂</span>Home</button>
+    <button class="mob-ntab" onclick="mobGo('ig')" id="mn-ig"><span class="mob-ntab-icon">◎</span>Instagram</button>
+    <button class="mob-ntab" onclick="mobGo('q')" id="mn-q"><span class="mob-ntab-icon">✦</span>Content</button>
+    <button class="mob-ntab" onclick="mobGo('cal')" id="mn-cal"><span class="mob-ntab-icon">▦</span>Calendar</button>
+    <button class="mob-ntab" onclick="mobGo('fin')" id="mn-fin"><span class="mob-ntab-icon">$</span>Finance</button>
+    <button class="mob-ntab" onclick="mobGo('grind')" id="mn-grind"><span class="mob-ntab-icon">⚡</span>Grind</button>
+    <button class="mob-ntab" onclick="mobGo('life')" id="mn-life"><span class="mob-ntab-icon">◈</span>Life</button>
+  </div>
+</div>
 
 <!-- BOTTOM NAV — mobile only -->
 <div class="botnav">
@@ -879,13 +935,13 @@ label{
   <button class="bnav-j" onclick="openJ()">
     <div class="bnav-j-circle">▲</div>
   </button>
-  <button class="bnav-item" onclick="go('grind')" id="bn-grind">
-    <span class="bnav-icon">⚡</span>
-    <span>Grind</span>
+  <button class="bnav-item" onclick="go('q')" id="bn-q">
+    <span class="bnav-icon">✦</span>
+    <span>Content</span>
   </button>
-  <button class="bnav-item" onclick="go('finance')" id="bn-finance">
-    <span class="bnav-icon">$</span>
-    <span>Finance</span>
+  <button class="bnav-item" onclick="go('cal')" id="bn-cal">
+    <span class="bnav-icon">▦</span>
+    <span>Calendar</span>
   </button>
 </div>
 
@@ -3745,6 +3801,39 @@ function setApiKey() {
     toast('Invalid key — must start with sk-ant-');
   }
 }
+
+// ── MOBILE HAMBURGER MENU ─────────────────────────
+function toggleMobMenu() {
+  const dd = el('mob-dropdown');
+  const btn = el('mob-menu-btn');
+  const open = dd.classList.toggle('on');
+  btn.classList.toggle('on', open);
+  btn.textContent = open ? '✕' : '☰';
+}
+
+function closeMobMenu() {
+  const dd = el('mob-dropdown');
+  const btn = el('mob-menu-btn');
+  if(dd) dd.classList.remove('on');
+  if(btn) { btn.classList.remove('on'); btn.textContent = '☰'; }
+}
+
+function mobGo(tab) {
+  // Update mobile dropdown active state
+  document.querySelectorAll('.mob-ntab').forEach(b => b.classList.remove('on'));
+  const mn = el('mn-'+tab); if(mn) mn.classList.add('on');
+  closeMobMenu();
+  go(tab);
+}
+
+// Close menu when tapping outside
+document.addEventListener('click', e => {
+  const dd = el('mob-dropdown');
+  const btn = el('mob-menu-btn');
+  if(dd && dd.classList.contains('on') && !dd.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+    closeMobMenu();
+  }
+});
 
 // ── SIMPLE / DETAILED TOGGLE ──────────────────────
 function toggleView() {
