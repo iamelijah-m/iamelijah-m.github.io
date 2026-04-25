@@ -479,6 +479,150 @@ label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:upperca
 /* post table scroll on mobile */
 #ig-posts-table{overflow-x:auto}
 
+/* ── GRIND TAB ───────────────────────────────────── */
+.grind-section-title{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:13px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--t3);margin-bottom:12px;
+  display:flex;align-items:center;gap:10px;
+}
+.grind-section-title::after{content:'';flex:1;height:1px;background:var(--b2)}
+
+/* Routine checklist */
+.routine-item{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 0;border-bottom:1px solid var(--b1);
+  cursor:pointer;transition:opacity 0.2s;
+}
+.routine-item:last-child{border-bottom:none}
+.routine-item.done{opacity:0.38}
+.routine-item.done .ri-text{text-decoration:line-through}
+.ri-chk{
+  width:22px;height:22px;border-radius:6px;
+  border:1.5px solid var(--b3);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;transition:all 0.2s;min-width:22px;
+}
+.routine-item.done .ri-chk{background:var(--ng);border-color:var(--ng);color:#000;box-shadow:0 0 8px rgba(57,255,20,0.35)}
+.ri-icon{font-size:16px;flex-shrink:0}
+.ri-text{font-size:13px;color:var(--t2);flex:1;line-height:1.35}
+.ri-time{font-family:monospace;font-size:10px;color:var(--t3);flex-shrink:0}
+
+/* Habit tracker */
+.habit-row{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 0;border-bottom:1px solid var(--b1);
+}
+.habit-row:last-child{border-bottom:none}
+.habit-label{font-size:13px;color:var(--t2);flex:1}
+.habit-streak{font-family:monospace;font-size:10px;color:var(--ng);flex-shrink:0;min-width:48px;text-align:right}
+.habit-dots{display:flex;gap:4px;flex-shrink:0}
+.hdot{
+  width:24px;height:24px;border-radius:6px;
+  border:1px solid var(--b2);background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;cursor:pointer;transition:all 0.15s;
+  flex-shrink:0;color:var(--t3);font-family:monospace;
+}
+.hdot.hit{background:rgba(57,255,20,0.12);border-color:rgba(57,255,20,0.3);color:var(--ng)}
+.hdot.miss{background:rgba(255,58,58,0.07);border-color:rgba(255,58,58,0.15);color:var(--nr)}
+@media(max-width:500px){.hdot{width:20px;height:20px;font-size:9px}}
+
+/* Win log */
+.win-entry{
+  background:var(--bg3);border:1px solid var(--b2);
+  border-radius:10px;padding:14px;margin-bottom:8px;
+  border-left:3px solid var(--t4);
+}
+.win-entry.today{border-left-color:var(--ng)}
+.win-date{font-family:monospace;font-size:9px;color:var(--t3);letter-spacing:1px;margin-bottom:8px;text-transform:uppercase}
+.win-q{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:4px;margin-top:8px}
+.win-q:first-child{margin-top:0}
+.win-a{font-size:13px;color:var(--t2);line-height:1.5}
+
+/* Streak display */
+.streak-display{
+  display:flex;align-items:center;gap:16px;
+  padding:16px;background:rgba(57,255,20,0.04);
+  border:1px solid rgba(57,255,20,0.12);border-radius:12px;
+  margin-bottom:14px;
+}
+.streak-num{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:52px;color:var(--ng);line-height:1;
+  text-shadow:0 0 24px rgba(57,255,20,0.35);
+}
+.streak-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ng);margin-top:4px}
+.streak-sub{font-size:11px;color:var(--t3);line-height:1.5;flex:1}
+
+/* Weekly review */
+.review-q{margin-bottom:14px}
+.review-q label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:6px}
+.review-q textarea{min-height:60px;font-size:14px}
+
+/* Time blocks */
+.time-block{
+  display:flex;align-items:stretch;gap:0;
+  margin-bottom:8px;border-radius:10px;overflow:hidden;
+  border:1px solid var(--b2);
+}
+.tb-time{
+  background:var(--s2);padding:12px 14px;
+  font-family:monospace;font-size:11px;color:var(--t3);
+  display:flex;align-items:center;flex-shrink:0;
+  border-right:1px solid var(--b2);min-width:70px;
+}
+.tb-content{
+  padding:12px 14px;flex:1;background:var(--s1);
+}
+.tb-label{font-size:13px;color:var(--t1);font-weight:500;margin-bottom:3px}
+.tb-sub{font-size:11px;color:var(--t3)}
+.tb-tag{
+  display:inline-flex;font-size:9px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-top:6px;
+}
+.tbt-work{background:rgba(0,212,255,0.07);color:var(--nb);border:1px solid rgba(0,212,255,0.15)}
+.tbt-content{background:rgba(57,255,20,0.07);color:var(--ng);border:1px solid rgba(57,255,20,0.14)}
+.tbt-rest{background:rgba(192,192,192,0.05);color:var(--silver);border:1px solid var(--b3)}
+.tbt-grind{background:rgba(191,95,255,0.07);color:var(--np);border:1px solid rgba(191,95,255,0.15)}
+
+/* Goals hierarchy */
+.goal-tier{margin-bottom:20px}
+.goal-tier-label{
+  font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--t3);margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.goal-tier-label::after{content:'';flex:1;height:1px;background:var(--b1)}
+.big-goal{
+  padding:16px;background:var(--s2);border:1px solid var(--b2);
+  border-radius:12px;margin-bottom:8px;
+}
+.big-goal-name{font-size:15px;font-weight:600;color:var(--t1);margin-bottom:8px}
+.sub-goal{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 0;border-top:1px solid var(--b1);
+}
+.sub-goal-chk{
+  width:18px;height:18px;border-radius:4px;border:1px solid var(--b3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;cursor:pointer;flex-shrink:0;transition:all 0.15s;min-width:18px;
+}
+.sub-goal.done .sub-goal-chk{background:var(--ng);border-color:var(--ng);color:#000}
+.sub-goal.done .sub-goal-text{text-decoration:line-through;opacity:0.45}
+.sub-goal-text{font-size:12px;color:var(--t2);flex:1}
+
+/* Tab toggle for grind sections */
+.grind-tabs{display:flex;gap:0;border-bottom:1px solid var(--b2);margin-bottom:20px;overflow-x:auto;scrollbar-width:none}
+.grind-tabs::-webkit-scrollbar{display:none}
+.gtab{
+  font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:var(--t3);background:none;border:none;border-bottom:2px solid transparent;
+  padding:10px 16px;cursor:pointer;white-space:nowrap;margin-bottom:-1px;transition:all 0.2s;
+}
+.gtab.on{color:var(--silver);border-bottom-color:var(--ng)}
+.gsection{display:none}
+.gsection.on{display:block}
+
 /* ── TRIAL REEL PUBLISHER ────────────────────────────────────────────────── */
 .tr-card{
   background:var(--s1);border:1px solid var(--b2);
@@ -516,57 +660,6 @@ label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:upperca
 .tr-best-time{
   font-size:11px;font-weight:600;color:var(--ng);
   display:flex;align-items:center;gap:6px;margin-bottom:10px;
-}
-.tr-schedule-btn{
-  background:rgba(139,92,246,0.12);color:var(--np);
-  border:1px solid rgba(139,92,246,0.3);
-  font-size:10px;font-weight:700;letter-spacing:0.8px;
-  padding:5px 11px;border-radius:7px;cursor:pointer;
-  transition:all 0.2s;display:flex;align-items:center;gap:5px;
-}
-.tr-schedule-btn:hover{background:rgba(139,92,246,0.22)}
-.tr-schedule-panel{
-  background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.2);
-  border-radius:10px;padding:12px;margin-bottom:10px;
-}
-.tr-schedule-panel .sch-loading{
-  text-align:center;font-size:11px;color:var(--t3);padding:8px 0;
-}
-.sch-section-title{
-  font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--np);
-  text-transform:uppercase;margin-bottom:8px;
-}
-.sch-today-slots{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
-.sch-slot{
-  background:rgba(57,255,20,0.08);border:1px solid rgba(57,255,20,0.25);
-  border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--ng);
-  cursor:default;
-}
-.sch-slot.sch-best{
-  background:rgba(57,255,20,0.18);border-color:rgba(57,255,20,0.5);
-  box-shadow:0 0 8px rgba(57,255,20,0.2);
-}
-.sch-slot.sch-passed{opacity:0.4;}
-.sch-week{display:flex;flex-direction:column;gap:5px;}
-.sch-day-row{
-  display:flex;align-items:center;gap:8px;
-  padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);
-}
-.sch-day-row:last-child{border-bottom:none;}
-.sch-day-name{
-  font-size:10px;font-weight:700;color:var(--t2);
-  min-width:36px;letter-spacing:0.3px;
-}
-.sch-day-name.sch-today-day{color:var(--ng);}
-.sch-day-times{display:flex;flex-wrap:wrap;gap:4px;flex:1;}
-.sch-day-time{
-  font-size:10px;font-weight:600;color:var(--t2);
-  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
-  border-radius:5px;padding:3px 7px;
-}
-.sch-day-time.sch-prime{color:var(--np);border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.08);}
-.sch-reason{
-  font-size:9px;color:var(--t3);margin-top:8px;font-style:italic;line-height:1.5;
 }
 .tr-actions{display:flex;gap:8px;flex-wrap:wrap}
 .tr-publish-btn{
@@ -634,6 +727,7 @@ label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:upperca
     <button class="ntab" onclick="go('q')" id="nt-q">Content</button>
     <button class="ntab" onclick="go('cal')" id="nt-cal">Calendar</button>
     <button class="ntab" onclick="go('fin')" id="nt-fin">Finance</button>
+    <button class="ntab" onclick="go('grind')" id="nt-grind">Grind</button>
   </div>
   <div class="nav-r">
     <div class="live-dot" id="ldot"></div>
@@ -659,9 +753,9 @@ label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:upperca
     <span class="bnav-icon">&#9635;</span>
     <span>Content</span>
   </button>
-  <button class="bnav-item" onclick="go('fin')" id="bn-fin">
-    <span class="bnav-icon">&#36;</span>
-    <span>Finance</span>
+  <button class="bnav-item" onclick="go('grind')" id="bn-grind">
+    <span class="bnav-icon">&#9889;</span>
+    <span>Grind</span>
   </button>
 </div>
 
@@ -797,7 +891,7 @@ label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:upperca
       </div>
     </div>
     <div style="font-size:12px;color:var(--t2);margin-bottom:12px;line-height:1.6">
-      JARVIS auto-analyzes your Trial Reels every 4 hours. Posts under 24h show as Pending — JARVIS checks back automatically and upgrades them when ready. You mark it done when you publish.
+      JARVIS analyzes each Trial Reel using 2026 algorithm benchmarks — views, engagement rate, watch time signals, and your account averages. Waits 24–48 hours before recommending publish. You mark it done when you publish.
     </div>
     <div class="tr-filter-bar">
       <button class="trf-btn on" onclick="filterTrials('all',this)">All</button>
@@ -933,6 +1027,219 @@ label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:upperca
 </div>
 
 </main>
+
+<!-- ======= GRIND ======= -->
+<div class="panel" id="p-grind">
+
+  <!-- Header -->
+  <div style="margin-bottom:20px">
+    <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:28px;letter-spacing:3px;color:var(--platinum)">Grind System</div>
+    <div style="font-size:11px;color:var(--t3);margin-top:3px">Routine · Habits · Wins · Goals · Time Blocks</div>
+  </div>
+
+  <!-- Sub-tabs -->
+  <div class="grind-tabs">
+    <button class="gtab on" onclick="gTab('morning')">Morning</button>
+    <button class="gtab" onclick="gTab('habits')">Habits</button>
+    <button class="gtab" onclick="gTab('wins')">Daily Wins</button>
+    <button class="gtab" onclick="gTab('goals')">Goals</button>
+    <button class="gtab" onclick="gTab('timeblocks')">Time Blocks</button>
+    <button class="gtab" onclick="gTab('review')">Weekly Review</button>
+  </div>
+
+  <!-- ── MORNING ROUTINE ── -->
+  <div class="gsection on" id="gs-morning">
+    <div class="streak-display">
+      <div>
+        <div class="streak-num" id="routine-streak">0</div>
+        <div class="streak-label">Day Streak</div>
+      </div>
+      <div class="streak-sub">
+        Complete your morning routine every day to keep it alive.<br>
+        <span style="color:var(--ng);font-weight:600" id="routine-streak-msg">Start today — check everything off.</span>
+      </div>
+    </div>
+
+    <div class="card mb">
+      <div class="chdr">
+        Morning Routine
+        <div style="display:flex;gap:6px">
+          <span id="routine-pct" style="font-size:10px;color:var(--ng);font-family:monospace">0 / 0</span>
+          <button class="btn bxs bgh" onclick="resetRoutine()">Reset</button>
+        </div>
+      </div>
+      <div id="routine-list"></div>
+    </div>
+
+    <div class="card">
+      <div class="chdr">Your 9AM–12PM Grind Window <span style="font-size:10px;color:var(--t3);font-weight:400;letter-spacing:0;text-transform:none">Before work</span></div>
+      <div style="font-size:12px;color:var(--t3);margin-bottom:12px">3 hours. Pick your 3 priorities and protect this window.</div>
+      <div id="grind-window-tasks"></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input id="gw-input" placeholder="Add a task for this morning..." style="flex:1;font-size:14px;padding:10px 13px">
+        <button class="btn bsm bneon" onclick="addGrindTask()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── HABITS ── -->
+  <div class="gsection" id="gs-habits">
+    <div class="card mb">
+      <div class="chdr">
+        Daily Habits
+        <button class="btn bxs bgh" onclick="openAddHabit()">+ Add</button>
+      </div>
+      <div style="font-size:11px;color:var(--t3);margin-bottom:14px">Tap a day to mark it. Last 7 days shown. Streaks build momentum.</div>
+      <div style="display:grid;grid-template-columns:70px 1fr auto;gap:6px;padding:0 0 8px;border-bottom:1px solid var(--b2);margin-bottom:4px">
+        <span style="font-size:9px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase">Habit</span>
+        <span style="font-size:9px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase">Last 7 Days</span>
+        <span style="font-size:9px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase">Streak</span>
+      </div>
+      <div id="habit-list"></div>
+    </div>
+
+    <!-- Add habit modal inline -->
+    <div id="add-habit-box" style="display:none" class="card card-nb">
+      <div class="chdr">New Habit</div>
+      <div class="frow"><label>Habit Name</label><input id="h-name-in" placeholder="e.g. Post a Trial Reel"></div>
+      <div class="frow"><label>Icon (emoji)</label><input id="h-icon-in" placeholder="🔥" style="width:80px"></div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn bxs bgh" onclick="el('add-habit-box').style.display='none'">Cancel</button>
+        <button class="btn bxs bneon" onclick="saveNewHabit()" style="margin-left:auto">Save Habit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DAILY WINS ── -->
+  <div class="gsection" id="gs-wins">
+    <!-- Today's check-in -->
+    <div class="card card-ng mb" id="wins-today-card">
+      <div class="chdr">Tonight's Check-In <span id="wins-today-status" style="font-size:10px;color:var(--t3);font-weight:400;letter-spacing:0;text-transform:none"></span></div>
+      <div style="font-size:12px;color:var(--t3);margin-bottom:16px;line-height:1.6">3 questions. Takes 2 minutes. Does more for your mindset than an hour of scrolling.</div>
+
+      <div class="review-q">
+        <label>What did I actually ship today?</label>
+        <textarea id="w-shipped" placeholder="What got done — content, SaaS work, anything real..."></textarea>
+      </div>
+      <div class="review-q">
+        <label>What moved forward?</label>
+        <textarea id="w-forward" placeholder="Progress made — follower count, task completed, insight gained..."></textarea>
+      </div>
+      <div class="review-q">
+        <label>What do I carry into tomorrow?</label>
+        <textarea id="w-tomorrow" placeholder="One thing left undone, or the one thing to hit first..."></textarea>
+      </div>
+
+      <button class="btn btn-full bneon" style="margin-top:4px" onclick="saveWins()">Lock In Today &#10003;</button>
+    </div>
+
+    <!-- Win streak -->
+    <div class="streak-display mb">
+      <div>
+        <div class="streak-num" id="wins-streak">0</div>
+        <div class="streak-label">Day Streak</div>
+      </div>
+      <div class="streak-sub" id="wins-streak-msg">Log your wins every night to keep the streak alive. Consistency is the proof.</div>
+    </div>
+
+    <!-- Past entries -->
+    <div class="card">
+      <div class="chdr">Win Log</div>
+      <div id="wins-log"></div>
+    </div>
+  </div>
+
+  <!-- ── GOALS HIERARCHY ── -->
+  <div class="gsection" id="gs-goals">
+    <div class="card mb">
+      <div class="chdr">
+        Big Goals
+        <button class="btn bxs bgh" onclick="openAddBigGoal()">+ Add Goal</button>
+      </div>
+      <div style="font-size:11px;color:var(--t3);margin-bottom:14px;line-height:1.5">Your real targets — not a to-do list. Each breaks down into monthly actions.</div>
+      <div id="big-goals-list"></div>
+    </div>
+
+    <!-- Add big goal (inline) -->
+    <div id="add-goal-box" style="display:none" class="card card-np mb">
+      <div class="chdr">New Goal</div>
+      <div class="frow"><label>Goal Name</label><input id="bg-name" placeholder="e.g. Pay off $8,000 debt"></div>
+      <div class="frow"><label>Target (number, optional)</label><input id="bg-target" type="number" placeholder="e.g. 8000"></div>
+      <div class="frow"><label>Deadline</label><input id="bg-deadline" type="date"></div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn bxs bgh" onclick="el('add-goal-box').style.display='none'">Cancel</button>
+        <button class="btn bxs bneon" onclick="saveBigGoal()" style="margin-left:auto">Save Goal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TIME BLOCKS ── -->
+  <div class="gsection" id="gs-timeblocks">
+    <div class="card mb">
+      <div class="chdr">Your Day — Time Blocks</div>
+      <div style="font-size:11px;color:var(--t3);margin-bottom:16px;line-height:1.5">Your schedule mapped out. Edit blocks to match your actual day.</div>
+      <div id="timeblocks-list"></div>
+    </div>
+    <div class="card">
+      <div class="chdr">Add Custom Block</div>
+      <div class="fr2">
+        <div class="frow"><label>Start Time</label><input type="time" id="tb-start" value="09:00"></div>
+        <div class="frow"><label>End Time</label><input type="time" id="tb-end" value="10:00"></div>
+      </div>
+      <div class="frow"><label>Label</label><input id="tb-label" placeholder="e.g. SaaS work, film reel, gym..."></div>
+      <div class="frow"><label>Type</label>
+        <select id="tb-type">
+          <option value="grind">Grind (SaaS / Business)</option>
+          <option value="content">Content (film / edit / post)</option>
+          <option value="work">Work (Home Depot)</option>
+          <option value="rest">Rest / Life</option>
+        </select>
+      </div>
+      <button class="btn bsm bneon" style="margin-top:4px" onclick="addTimeBlock()">Add Block</button>
+    </div>
+  </div>
+
+  <!-- ── WEEKLY REVIEW ── -->
+  <div class="gsection" id="gs-review">
+    <div class="card mb">
+      <div class="chdr">
+        Weekly Review
+        <span style="font-size:10px;color:var(--t3);font-weight:400;letter-spacing:0;text-transform:none">Sundays · 10 min</span>
+      </div>
+      <div style="font-size:12px;color:var(--t3);margin-bottom:18px;line-height:1.6">
+        Every Sunday. 5 questions. Without this you float through weeks without direction. This is how you stay locked in.
+      </div>
+      <div class="review-q">
+        <label>What worked this week?</label>
+        <textarea id="rv-worked" placeholder="Content that performed, tasks you crushed, momentum you felt..."></textarea>
+      </div>
+      <div class="review-q">
+        <label>What didn't work?</label>
+        <textarea id="rv-didnt" placeholder="What you avoided, what felt like a waste, what you'd do differently..."></textarea>
+      </div>
+      <div class="review-q">
+        <label>Instagram — what did the numbers tell you?</label>
+        <textarea id="rv-ig" placeholder="Follower change, best performing post, what to post more of..."></textarea>
+      </div>
+      <div class="review-q">
+        <label>SaaS / business progress?</label>
+        <textarea id="rv-saas" placeholder="Features built, roadblocks hit, what you'll tackle next week..."></textarea>
+      </div>
+      <div class="review-q">
+        <label>Financial snapshot — are you moving in the right direction?</label>
+        <textarea id="rv-fin" placeholder="Debt paid down? Extra income? What needs to change?"></textarea>
+      </div>
+      <button class="btn btn-full bneon" style="margin-top:8px" onclick="saveWeeklyReview()">Save This Week's Review &#10003;</button>
+    </div>
+
+    <!-- Past reviews -->
+    <div class="card">
+      <div class="chdr">Review History</div>
+      <div id="review-history"></div>
+    </div>
+  </div>
+
+</div>
 <button id="fab" onclick="fab()">+</button>
 <div id="toast"></div>
 
@@ -1156,6 +1463,7 @@ function go(tab) {
   if(tab==='cal') renderCal();
   if(tab==='fin') renderFin();
   if(tab==='cmd') initCmd();
+  if(tab==='grind') initGrind();
 }
 
 // ── COMMAND ──────────────────────────────────────
@@ -1557,55 +1865,6 @@ function renderPostsTable() {
 
 // ── TRIAL REEL PUBLISHER ─────────────────────────────────────────────────
 let trialResults = gv('j6_trials', []); // {id, verdict, score, reasoning, bestTime, publishedAt}
-let _trialTimer = null;
-
-// Auto-analyze: runs every 30 minutes while app is open
-// Re-analyzes ALL eligible posts constantly so verdicts stay fresh
-function startAutoAnalyze() {
-  clearInterval(_trialTimer);
-
-  const runCheck = async () => {
-    if(!igPostsData || !igPostsData.length) return;
-    const now = Date.now();
-
-    const needsAnalysis = igPostsData.some(p => {
-      if(!p.date) return false;
-      const age = (now - new Date(p.date).getTime()) / 36e5;
-      if(age > 336) return false; // older than 14 days, skip
-      if(age < 24) return false;  // too new, skip
-      const ex = trialResults.find(r => r.id === p.id);
-      if(!ex || !ex.verdict || ex.verdict === 'PENDING') return true;
-      // Re-check HOLD every 30 min, SKIP every 1h, PUBLISH every 2h
-      const since = ex.analyzedAt ? (now - ex.analyzedAt) : Infinity;
-      if(ex.verdict === 'HOLD'    && since > 30*60*1000) return true;
-      if(ex.verdict === 'SKIP'    && since > 60*60*1000) return true;
-      if(ex.verdict === 'PUBLISH' && since > 2*60*60*1000) return true;
-      return false;
-    });
-
-    if(needsAnalysis) {
-      console.log('Auto-analyzing reels...');
-      // Clear stale verdicts so they get fresh analysis
-      trialResults.forEach((r, i) => {
-        if(r.verdict === 'PENDING') return; // keep pending as-is
-        const since = r.analyzedAt ? (now - r.analyzedAt) : Infinity;
-        const stale = (r.verdict === 'HOLD'    && since > 30*60*1000) ||
-                      (r.verdict === 'SKIP'    && since > 60*60*1000) ||
-                      (r.verdict === 'PUBLISH' && since > 2*60*60*1000);
-        if(stale) trialResults[i].verdict = null;
-      });
-      await runTrialAnalysis();
-      const publishReady = trialResults.filter(r => r.verdict === 'PUBLISH' && !r.publishedAt && !r.isDuplicate);
-      if(publishReady.length) {
-        toast('⚡ ' + publishReady.length + ' reel' + (publishReady.length>1?'s':'') + ' ready to publish!');
-      }
-    }
-  };
-
-  // Run immediately then every 30 minutes
-  runCheck();
-  _trialTimer = setInterval(runCheck, 30 * 60 * 1000);
-}
 let trialFilter = 'all';
 
 function filterTrials(f, btn) {
@@ -1681,7 +1940,6 @@ async function runTrialAnalysis() {
   for(const post of toAnalyze) {
     // Skip if already analyzed and verdict exists (use cached)
     const existing = trialResults.find(r => r.id === post.id);
-    // Only skip if verdict exists, is not null, and not PENDING
     if(existing && existing.verdict && existing.verdict !== 'PENDING') continue;
 
     const ageHours = Math.round((now - new Date(post.date).getTime()) / 36e5);
@@ -1711,7 +1969,7 @@ Analyze this ${post.type} posted ${ageHours} hours ago:
 For Trial Reels: publish to main if it outperforms account averages in at least 2 key signals within 48h.
 
 Return JSON only, no other text:
-{"verdict":"PUBLISH","score":85,"reasoning":"2-3 sentences why","key_signal":"the #1 signal"}
+{"verdict":"PUBLISH","score":85,"reasoning":"2-3 sentences why","best_time":"Day at Time EST","key_signal":"the #1 signal"}
 
 verdict must be exactly: PUBLISH, HOLD, or SKIP`;
 
@@ -1827,11 +2085,7 @@ function renderTrials() {
         <div class="tr-stat">&#128336; <strong>${ageHours}h</strong> old</div>
       </div>
       ${r.reasoning ? `<div class="tr-reasoning">${r.reasoning}</div>` : ''}
-      ${!isDone && !isDup && !isPending ? `
-        <div id="sch-panel-${r.id}" style="display:none" class="tr-schedule-panel"></div>
-        <button class="tr-schedule-btn" onclick="toggleSchedule('${r.id}', this)" style="margin-bottom:10px">
-          &#128336; Best Time to Post
-        </button>` : ''}
+      ${r.bestTime && !isDone && !isDup ? `<div class="tr-best-time">&#9889; ${r.bestTime}</div>` : ''}
       ${r.keySignal ? `<div style="font-size:10px;color:var(--t3);margin-bottom:10px;letter-spacing:0.5px">Key signal: ${r.keySignal}</div>` : ''}
       <div class="tr-actions" style="flex-wrap:wrap">
         ${!isDone && !isDup && r.verdict === 'PUBLISH' ?
@@ -1850,167 +2104,6 @@ function renderTrials() {
       </div>
     </div>`;
   }).join('');
-}
-
-// ── POSTING SCHEDULE GENERATOR ───────────────────────────────────────────
-const _scheduleCache = {}; // cache by reel id so we don't re-call AI on every toggle
-
-async function toggleSchedule(id, btn) {
-  const panel = document.getElementById('sch-panel-' + id);
-  if (!panel) return;
-
-  if (panel.style.display !== 'none') {
-    panel.style.display = 'none';
-    btn.innerHTML = '&#128336; Best Time to Post';
-    return;
-  }
-
-  panel.style.display = 'block';
-  btn.innerHTML = '&#128336; Hide Schedule';
-
-  // Use cached result if available
-  if (_scheduleCache[id]) {
-    renderSchedulePanel(panel, _scheduleCache[id]);
-    return;
-  }
-
-  panel.innerHTML = '<div class="sch-loading"><div class="spin"><span></span><span></span><span></span></div><div style="margin-top:8px">JARVIS analyzing optimal posting windows...</div></div>';
-
-  const r = trialResults.find(x => x.id === id);
-  if (!r) { panel.innerHTML = '<div class="sch-loading">Reel not found.</div>'; return; }
-
-  const schedule = await genPostingSchedule(r);
-  _scheduleCache[id] = schedule;
-  renderSchedulePanel(panel, schedule);
-}
-
-function renderSchedulePanel(panel, data) {
-  const now = new Date();
-  const todayIdx = now.getDay(); // 0=Sun
-  const nowMins = now.getHours() * 60 + now.getMinutes();
-  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const fullDayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-
-  // Today slots
-  const todaySlots = (data.today || []).map(slot => {
-    const [h, m] = slot.time.replace(/[ap]m/i,'').split(':').map(Number);
-    const isPM = /pm/i.test(slot.time) && h !== 12;
-    const slotMins = (isPM ? h + 12 : h) * 60 + (m || 0);
-    const passed = slotMins < nowMins;
-    const isBest = slot.best === true;
-    return `<div class="sch-slot${isBest ? ' sch-best' : ''}${passed ? ' sch-passed' : ''}" title="${slot.reason || ''}">
-      ${slot.time} EST${isBest ? ' ★' : ''}
-    </div>`;
-  }).join('');
-
-  // Week rows
-  const weekRows = (data.week || []).map(day => {
-    const isToday = day.day === fullDayNames[todayIdx] || day.day === dayNames[todayIdx];
-    const timePills = (day.times || []).map((t, i) =>
-      `<span class="sch-day-time${i === 0 ? ' sch-prime' : ''}">${t}</span>`
-    ).join('');
-    return `<div class="sch-day-row">
-      <div class="sch-day-name${isToday ? ' sch-today-day' : ''}">${day.day}${isToday ? ' ●' : ''}</div>
-      <div class="sch-day-times">${timePills}</div>
-    </div>`;
-  }).join('');
-
-  panel.innerHTML = `
-    <div class="sch-section-title">&#9889; Today's Best Windows</div>
-    <div class="sch-today-slots">${todaySlots || '<span style="font-size:11px;color:var(--t3)">No remaining windows today — check tomorrow.</span>'}</div>
-    <div class="sch-section-title">&#128197; This Week</div>
-    <div class="sch-week">${weekRows}</div>
-    ${data.reason ? `<div class="sch-reason">${data.reason}</div>` : ''}
-  `;
-}
-
-async function genPostingSchedule(r) {
-  const followers = igData.followers || 1917;
-  const avgEng    = igData.engRate   || 2.93;
-  const avgLikes  = igData.likes     || 56;
-  const avgViews  = igData.views     || 0;
-  const now = new Date();
-  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const todayName = dayNames[now.getDay()];
-  const currentHour = now.getHours();
-  const tz = 'EST (UTC-5)';
-
-  const reelEng = followers ? ((r.likes / followers) * 100).toFixed(2) : 0;
-  const likesVsAvg = avgLikes ? Math.round((r.likes / avgLikes) * 100) : null;
-  const viewsVsAvg = (r.views && avgViews) ? Math.round((r.views / avgViews) * 100) : null;
-  const ageHours = r.date ? Math.round((Date.now() - new Date(r.date).getTime()) / 36e5) : '?';
-
-  const prompt = `You are JARVIS, a precision Instagram strategy AI for @iamelijah.m.
-
-ACCOUNT CONTEXT:
-- Followers: ${followers} | Avg engagement: ${avgEng}% | Avg likes: ${avgLikes} | Avg views: ${avgViews || 'unknown'}
-- Creator niche: lifestyle, motivation, personal brand (Trinity FL, EST timezone)
-- Strategy: Trial Reels 2-3x/day to non-followers, publish to main 2x/week if they perform
-- Goals: grow followers, increase reach to non-followers, boost saves and shares
-
-THIS REEL'S PERFORMANCE:
-- Type: ${r.type || 'Reel'} | Verdict: ${r.verdict} | Score: ${r.score}/100
-- Likes: ${r.likes || 0} (${likesVsAvg ? likesVsAvg + '% of account avg' : 'avg unknown'})
-- Views: ${r.views || 'unknown'} (${viewsVsAvg ? viewsVsAvg + '% of avg' : ''})
-- Comments: ${r.comments || 0} | Saves: ${r.saves || 'unknown'} | Shares: ${r.shares || 'unknown'}
-- Engagement: ${reelEng}% | Age: ${ageHours}h old
-- Caption preview: "${(r.caption || 'none').substring(0, 80)}"
-
-CURRENT TIME: It is currently ${currentHour}:00 EST on ${todayName}.
-
-TASK: Generate the optimal posting schedule for THIS specific reel based on its content type, current performance signals, and 2026 Instagram algorithm patterns (peak engagement windows, when lifestyle/motivation content performs best, when non-follower reach is highest).
-
-Return ONLY valid JSON, no other text:
-{
-  "today": [
-    {"time": "7:30pm", "best": true, "reason": "peak non-follower discovery window for lifestyle content"},
-    {"time": "9:00pm", "best": false, "reason": "secondary engagement spike"}
-  ],
-  "week": [
-    {"day": "Mon", "times": ["7:00pm", "12:00pm"]},
-    {"day": "Tue", "times": ["6:30pm", "8:00pm"]},
-    {"day": "Wed", "times": ["7:00pm"]},
-    {"day": "Thu", "times": ["6:00pm", "9:00pm"]},
-    {"day": "Fri", "times": ["5:30pm", "8:30pm"]},
-    {"day": "Sat", "times": ["10:00am", "7:00pm"]},
-    {"day": "Sun", "times": ["11:00am", "6:30pm"]}
-  ],
-  "reason": "One sentence explaining the strategy behind these times for this specific reel."
-}
-
-Rules:
-- today array: only include times AFTER ${currentHour}:00 EST. If it's past 9pm, return empty array [].
-- Mark the single best time as "best": true
-- Week times must be specific (e.g. "6:45pm") not ranges
-- Tailor times to THIS reel's content type and performance — a viral reel gets different advice than a struggling one
-- All times in EST`;
-
-  try {
-    const t = await ai(prompt, 600);
-    const m = t.match(/\{[\s\S]*\}/);
-    if (m) return JSON.parse(m[0]);
-  } catch(e) {
-    console.warn('Schedule gen failed:', e.message);
-  }
-
-  // Fallback schedule
-  const remaining = [];
-  if (currentHour < 12) remaining.push({time:'12:00pm', best:false, reason:'lunch scroll window'});
-  if (currentHour < 18) remaining.push({time:'6:30pm', best:true, reason:'peak lifestyle discovery'});
-  if (currentHour < 21) remaining.push({time:'9:00pm', best:false, reason:'evening engagement spike'});
-  return {
-    today: remaining,
-    week: [
-      {day:'Mon', times:['7:00pm','12:00pm']},
-      {day:'Tue', times:['6:30pm','8:00pm']},
-      {day:'Wed', times:['7:00pm','12:30pm']},
-      {day:'Thu', times:['6:00pm','9:00pm']},
-      {day:'Fri', times:['5:30pm','8:30pm']},
-      {day:'Sat', times:['10:00am','7:00pm']},
-      {day:'Sun', times:['11:00am','6:30pm']},
-    ],
-    reason: 'Peak windows for lifestyle content reaching non-followers in EST timezone.'
-  };
 }
 
 function markPublished(id) {
@@ -2142,7 +2235,7 @@ Re-analyze this ${post.type} posted ${ageHours} hours ago:
 
 ${ageHours > 48 ? 'This post is over 48 hours old. If it has not gained strong engagement by now it likely will not. Be honest about whether publishing to main is worth it.' : 'This post is between 24-48 hours old — prime window for publish decision.'}
 
-Return JSON only: {"verdict":"PUBLISH","score":85,"reasoning":"2-3 sentences why","key_signal":"#1 signal"}`;
+Return JSON only: {"verdict":"PUBLISH","score":85,"reasoning":"2-3 sentences why","best_time":"Specific Day at Time EST or null","key_signal":"#1 signal"}`;
 
   let result = null;
   try {
@@ -2317,18 +2410,6 @@ async function fetchLiveIG() {
 
     // Run AI analysis with live data
     runIGAnalysis(null, igPostsData);
-    // Start auto-analyze timer now that we have post data
-    startAutoAnalyze();
-    // Run once immediately if there are posts needing analysis
-    const needsFirstRun = igPostsData.some(p => {
-      if(!p.date) return false;
-      const age = (Date.now() - new Date(p.date).getTime()) / 36e5;
-      if(age < 24 || age > 336) return false;
-      return !trialResults.find(r => r.id === p.id);
-    });
-    if(needsFirstRun) {
-      setTimeout(runTrialAnalysis, 1500); // slight delay after page loads
-    }
 
   } catch(e) {
     console.warn('Live IG fetch failed:', e.message);
@@ -2760,7 +2841,9 @@ function setSyncStatus(state) {
 }
 
 function collectData() {
-  return { ideas, events, pri, priDone, fin, igData, trialResults, customGoals, ts: Date.now() };
+  return { ideas, events, pri, priDone, fin, igData, trialResults, customGoals,
+           routineChecks, grindTasks, habits, winsLog, bigGoals, timeBlocks, weeklyReviews,
+           ts: Date.now() };
 }
 
 let _st = null;
@@ -2817,6 +2900,13 @@ async function cloudLoad() {
       if(cloud.igData       && typeof cloud.igData==='object')                                 { igData=cloud.igData;             localStorage.setItem('j6_ig',     JSON.stringify(igData)); }
       if(cloud.trialResults && Array.isArray(cloud.trialResults) && cloud.trialResults.length) { trialResults=cloud.trialResults; localStorage.setItem('j6_trials', JSON.stringify(trialResults)); }
       if(cloud.customGoals  && Array.isArray(cloud.customGoals)  && cloud.customGoals.length)  { customGoals=cloud.customGoals;   localStorage.setItem('j6_cgoals', JSON.stringify(customGoals)); }
+      if(cloud.routineChecks && typeof cloud.routineChecks==='object')                         { routineChecks=cloud.routineChecks; localStorage.setItem('j6_rchk', JSON.stringify(routineChecks)); }
+      if(cloud.grindTasks   && Array.isArray(cloud.grindTasks))                                { grindTasks=cloud.grindTasks;     localStorage.setItem('j6_gtasks',JSON.stringify(grindTasks)); }
+      if(cloud.habits       && Array.isArray(cloud.habits)       && cloud.habits.length)       { habits=cloud.habits;             localStorage.setItem('j6_habits',JSON.stringify(habits)); }
+      if(cloud.winsLog      && Array.isArray(cloud.winsLog)      && cloud.winsLog.length)      { winsLog=cloud.winsLog;           localStorage.setItem('j6_wins',  JSON.stringify(winsLog)); }
+      if(cloud.bigGoals     && Array.isArray(cloud.bigGoals)     && cloud.bigGoals.length)     { bigGoals=cloud.bigGoals;         localStorage.setItem('j6_bgoals',JSON.stringify(bigGoals)); }
+      if(cloud.timeBlocks   && Array.isArray(cloud.timeBlocks)   && cloud.timeBlocks.length)   { timeBlocks=cloud.timeBlocks;     localStorage.setItem('j6_tblocks',JSON.stringify(timeBlocks)); }
+      if(cloud.weeklyReviews&& Array.isArray(cloud.weeklyReviews)&& cloud.weeklyReviews.length){ weeklyReviews=cloud.weeklyReviews;localStorage.setItem('j6_reviews',JSON.stringify(weeklyReviews)); }
       localStorage.setItem('j6_ts', cloud.ts);
       setSyncStatus('synced');
       console.log('Loaded from cloud.');
@@ -2852,6 +2942,11 @@ async function forcePull() {
     if(cloud.igData       && cloud.igData.followers)    { igData=cloud.igData;             localStorage.setItem('j6_ig',     JSON.stringify(igData)); }
     if(cloud.trialResults && cloud.trialResults.length) { trialResults=cloud.trialResults; localStorage.setItem('j6_trials', JSON.stringify(trialResults)); }
     if(cloud.customGoals  && cloud.customGoals.length)  { customGoals=cloud.customGoals;   localStorage.setItem('j6_cgoals', JSON.stringify(customGoals)); }
+    if(cloud.routineChecks && typeof cloud.routineChecks==='object') { routineChecks=cloud.routineChecks; localStorage.setItem('j6_rchk', JSON.stringify(routineChecks)); }
+    if(cloud.habits       && cloud.habits.length)       { habits=cloud.habits;             localStorage.setItem('j6_habits', JSON.stringify(habits)); }
+    if(cloud.winsLog      && cloud.winsLog.length)      { winsLog=cloud.winsLog;           localStorage.setItem('j6_wins', JSON.stringify(winsLog)); }
+    if(cloud.bigGoals     && cloud.bigGoals.length)     { bigGoals=cloud.bigGoals;         localStorage.setItem('j6_bgoals', JSON.stringify(bigGoals)); }
+    if(cloud.weeklyReviews && cloud.weeklyReviews.length){ weeklyReviews=cloud.weeklyReviews; localStorage.setItem('j6_reviews', JSON.stringify(weeklyReviews)); }
     if(cloud.ts) localStorage.setItem('j6_ts', cloud.ts);
     setSyncStatus('synced');
     initCmd(); renderQ(); renderFin();
@@ -2869,6 +2964,489 @@ function setApiKey() {
   } else if(k !== null) {
     toast('Invalid key — must start with sk-ant-');
   }
+}
+
+// ══════════════════════════════════════════════════════════
+// GRIND TAB
+// ══════════════════════════════════════════════════════════
+
+// ── DATA ─────────────────────────────────────────
+let routineChecks  = gv('j6_rchk', {});     // {date: {0:true, 1:false, ...}}
+let grindTasks     = gv('j6_gtasks', []);   // [{id,text,done}]
+let habits         = gv('j6_habits', null); // [{id,name,icon,log:{date:true/false}}]
+let winsLog        = gv('j6_wins', []);     // [{date,shipped,forward,tomorrow}]
+let bigGoals       = gv('j6_bgoals', null); // [{id,name,target,deadline,subgoals:[{id,text,done}]}]
+let timeBlocks     = gv('j6_tblocks', null);// [{id,start,end,label,type}]
+let weeklyReviews  = gv('j6_reviews', []);  // [{date,worked,didnt,ig,saas,fin}]
+
+// Default habits if none saved
+if(!habits) {
+  habits = [
+    {id:1, name:'Post a Trial Reel', icon:'🎬', log:{}},
+    {id:2, name:'Work on SaaS', icon:'💻', log:{}},
+    {id:3, name:'No unnecessary spending', icon:'💰', log:{}},
+    {id:4, name:'Reply to comments/DMs', icon:'💬', log:{}},
+    {id:5, name:'8+ hours sleep', icon:'😴', log:{}},
+  ];
+  sv('j6_habits', habits);
+}
+
+// Default time blocks
+if(!timeBlocks) {
+  timeBlocks = [
+    {id:1, start:'09:00', end:'12:00', label:'Morning Grind — SaaS + Content', type:'grind'},
+    {id:2, start:'12:00', end:'21:00', label:'Home Depot Shift', type:'work'},
+    {id:3, start:'21:00', end:'23:00', label:'Content Planning + Editing', type:'content'},
+    {id:4, start:'23:00', end:'03:00', label:'SaaS Build + Research', type:'grind'},
+  ];
+  sv('j6_tblocks', timeBlocks);
+}
+
+// Default big goals
+if(!bigGoals) {
+  bigGoals = [
+    {id:1, name:'Pay off $8,000 debt', target:8000, deadline:'2026-12-31', subgoals:[
+      {id:11, text:'Track every dollar spent this month', done:false},
+      {id:12, text:'Put $200 extra toward debt this paycheck', done:false},
+      {id:13, text:'Cancel any unused subscriptions', done:false},
+    ]},
+    {id:2, name:'Grow to 10,000 Instagram followers', target:10000, deadline:'2026-12-31', subgoals:[
+      {id:21, text:'Post 2–3 Trial Reels every day', done:false},
+      {id:22, text:'Publish 2 Main posts per week', done:false},
+      {id:23, text:'Hit 2K followers first milestone', done:false},
+    ]},
+    {id:3, name:'Launch SaaS tool + first paying customer', target:1, deadline:'2026-09-01', subgoals:[
+      {id:31, text:'Build core feature v1', done:false},
+      {id:32, text:'Create landing page', done:false},
+      {id:33, text:'Get first 5 beta users', done:false},
+    ]},
+  ];
+  sv('j6_bgoals', bigGoals);
+}
+
+const ROUTINE_ITEMS = [
+  {icon:'💧', text:'Drink water — before anything else', time:'9:00'},
+  {icon:'📱', text:'Check Trial Reel performance from last night', time:'9:05'},
+  {icon:'🎯', text:'Review today\'s 3 priorities in JARVIS', time:'9:10'},
+  {icon:'🚫', text:'No social scrolling for the first 30 minutes', time:'9:00'},
+  {icon:'💻', text:'Open SaaS project — work on it first', time:'9:15'},
+  {icon:'🎬', text:'Plan today\'s Trial Reel — concept + hook', time:'9:45'},
+  {icon:'📝', text:'Capture any new content ideas', time:'10:00'},
+];
+
+function todayKey() { return new Date().toISOString().split('T')[0]; }
+
+function get7Days() {
+  const days = [];
+  for(let i=6; i>=0; i--) {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    days.push(d.toISOString().split('T')[0]);
+  }
+  return days;
+}
+
+// ── SUB-TAB NAVIGATION ───────────────────────────
+function gTab(id) {
+  document.querySelectorAll('.gtab').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.gsection').forEach(s => s.classList.remove('on'));
+  event.target.classList.add('on');
+  el('gs-'+id).classList.add('on');
+  if(id==='morning')   renderRoutine();
+  if(id==='habits')    renderHabits();
+  if(id==='wins')      renderWins();
+  if(id==='goals')     renderBigGoals();
+  if(id==='timeblocks')renderTimeBlocks();
+  if(id==='review')    renderReviews();
+}
+
+function initGrind() {
+  renderRoutine();
+  renderHabits();
+  renderWins();
+  renderBigGoals();
+  renderTimeBlocks();
+  renderGrindTasks();
+}
+
+// ── MORNING ROUTINE ──────────────────────────────
+function renderRoutine() {
+  const today = todayKey();
+  const checks = routineChecks[today] || {};
+  const done = ROUTINE_ITEMS.filter((_, i) => checks[i]).length;
+  const total = ROUTINE_ITEMS.length;
+
+  el('routine-pct').textContent = `${done} / ${total}`;
+
+  // Streak calc
+  let streak = 0;
+  const d = new Date();
+  while(true) {
+    const k = d.toISOString().split('T')[0];
+    const dayChecks = routineChecks[k] || {};
+    const dayDone = ROUTINE_ITEMS.filter((_, i) => dayChecks[i]).length;
+    if(dayDone === total && total > 0) { streak++; d.setDate(d.getDate()-1); }
+    else break;
+    if(streak > 365) break;
+  }
+  el('routine-streak').textContent = streak;
+  el('routine-streak-msg').textContent = streak === 0
+    ? 'Start today — check everything off.'
+    : streak < 7 ? `${streak} days strong. Keep building.`
+    : streak < 30 ? `${streak} days. This is becoming who you are.`
+    : `${streak} days. You've built a real habit. Don't stop now.`;
+
+  el('routine-list').innerHTML = ROUTINE_ITEMS.map((item, i) => {
+    const isDone = !!checks[i];
+    return `<div class="routine-item${isDone?' done':''}" onclick="toggleRoutine(${i})">
+      <div class="ri-chk">${isDone ? '✓' : ''}</div>
+      <div class="ri-icon">${item.icon}</div>
+      <div class="ri-text">${item.text}</div>
+      <div class="ri-time">${item.time}</div>
+    </div>`;
+  }).join('');
+
+  // Auto-save if all done
+  if(done === total && total > 0) {
+    setTimeout(() => toast('Morning routine complete! 🔥'), 300);
+  }
+}
+
+function toggleRoutine(i) {
+  const today = todayKey();
+  if(!routineChecks[today]) routineChecks[today] = {};
+  routineChecks[today][i] = !routineChecks[today][i];
+  sv('j6_rchk', routineChecks);
+  renderRoutine();
+}
+
+function resetRoutine() {
+  const today = todayKey();
+  routineChecks[today] = {};
+  sv('j6_rchk', routineChecks);
+  renderRoutine();
+  toast('Routine reset for today.');
+}
+
+// ── GRIND WINDOW TASKS ───────────────────────────
+function renderGrindTasks() {
+  const today = todayKey();
+  const todayTasks = grindTasks.filter(t => t.date === today);
+  const container = el('grind-window-tasks');
+  if(!todayTasks.length) {
+    container.innerHTML = '<div style="color:var(--t3);font-size:12px;padding:8px 0">No tasks for this morning yet. Add up to 3.</div>';
+    return;
+  }
+  container.innerHTML = todayTasks.map(t => `
+    <div class="routine-item${t.done?' done':''}" onclick="toggleGrindTask('${t.id}')">
+      <div class="ri-chk">${t.done ? '✓' : ''}</div>
+      <div class="ri-text">${t.text}</div>
+      <button onclick="event.stopPropagation();delGrindTask('${t.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px;padding:4px;min-width:24px">✕</button>
+    </div>`).join('');
+}
+
+function addGrindTask() {
+  const inp = el('gw-input');
+  const text = inp.value.trim();
+  if(!text) return;
+  const today = todayKey();
+  const todayCount = grindTasks.filter(t => t.date === today && !t.done).length;
+  if(todayCount >= 3) { toast('3 tasks max for the grind window. Finish one first.'); return; }
+  grindTasks.push({id: Date.now().toString(), text, date: today, done: false});
+  sv('j6_gtasks', grindTasks);
+  inp.value = '';
+  renderGrindTasks();
+}
+
+function toggleGrindTask(id) {
+  const i = grindTasks.findIndex(t => t.id === id);
+  if(i > -1) { grindTasks[i].done = !grindTasks[i].done; sv('j6_gtasks', grindTasks); renderGrindTasks(); }
+}
+
+function delGrindTask(id) {
+  grindTasks = grindTasks.filter(t => t.id !== id);
+  sv('j6_gtasks', grindTasks);
+  renderGrindTasks();
+}
+
+// ── HABITS ───────────────────────────────────────
+function renderHabits() {
+  const days7 = get7Days();
+  const dayLabels = days7.map(d => {
+    const date = new Date(d+'T12:00:00');
+    return ['Su','Mo','Tu','We','Th','Fr','Sa'][date.getDay()];
+  });
+
+  el('habit-list').innerHTML = habits.map((h, hi) => {
+    // Streak
+    let streak = 0;
+    const d = new Date();
+    while(streak < 365) {
+      const k = d.toISOString().split('T')[0];
+      if(h.log[k]) { streak++; d.setDate(d.getDate()-1); } else break;
+    }
+    const dots = days7.map((day, di) => {
+      const hit = h.log[day];
+      const isToday = day === todayKey();
+      return `<div class="hdot${hit?' hit':''}" onclick="toggleHabit(${hi},'${day}')" title="${dayLabels[di]}">${isToday && !hit ? '•' : hit ? '✓' : ''}</div>`;
+    }).join('');
+
+    return `<div class="habit-row">
+      <div class="habit-label">${h.icon || '⚡'} ${h.name}</div>
+      <div class="habit-dots">${dots}</div>
+      <div class="habit-streak">${streak > 0 ? streak+'d 🔥' : '—'}</div>
+      <button onclick="delHabit(${hi})" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:13px;padding:4px;min-width:24px">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function toggleHabit(hi, day) {
+  habits[hi].log[day] = !habits[hi].log[day];
+  sv('j6_habits', habits);
+  renderHabits();
+}
+
+function delHabit(i) {
+  habits.splice(i, 1);
+  sv('j6_habits', habits);
+  renderHabits();
+}
+
+function openAddHabit() {
+  const box = el('add-habit-box');
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveNewHabit() {
+  const name = el('h-name-in').value.trim();
+  const icon = el('h-icon-in').value.trim() || '⚡';
+  if(!name) { toast('Enter a habit name.'); return; }
+  habits.push({id: Date.now(), name, icon, log: {}});
+  sv('j6_habits', habits);
+  el('add-habit-box').style.display = 'none';
+  el('h-name-in').value = '';
+  el('h-icon-in').value = '';
+  renderHabits();
+  toast('Habit added!');
+}
+
+// ── DAILY WINS ───────────────────────────────────
+function renderWins() {
+  const today = todayKey();
+  const todayEntry = winsLog.find(w => w.date === today);
+
+  // Streak
+  let streak = 0;
+  const d = new Date();
+  while(streak < 365) {
+    const k = d.toISOString().split('T')[0];
+    if(winsLog.find(w => w.date === k)) { streak++; d.setDate(d.getDate()-1); } else break;
+  }
+  el('wins-streak').textContent = streak;
+  el('wins-streak-msg').textContent = streak === 0
+    ? 'Log tonight to start your streak.'
+    : streak < 7 ? `${streak} nights logged. Keep showing up.`
+    : `${streak} nights. You've built a real practice.`;
+
+  // Status
+  el('wins-today-status').textContent = todayEntry ? '✓ Logged today' : 'Not logged yet';
+  if(todayEntry) {
+    el('w-shipped').value = todayEntry.shipped || '';
+    el('w-forward').value = todayEntry.forward || '';
+    el('w-tomorrow').value = todayEntry.tomorrow || '';
+  }
+
+  // Log
+  const past = [...winsLog].reverse().slice(0, 14);
+  el('wins-log').innerHTML = past.length
+    ? past.map(w => {
+      const isToday = w.date === today;
+      return `<div class="win-entry${isToday?' today':''}">
+        <div class="win-date">${isToday ? 'Today — ' : ''}${w.date}</div>
+        <div class="win-q">Shipped</div><div class="win-a">${w.shipped||'—'}</div>
+        <div class="win-q">Moved forward</div><div class="win-a">${w.forward||'—'}</div>
+        <div class="win-q">Into tomorrow</div><div class="win-a">${w.tomorrow||'—'}</div>
+      </div>`;
+    }).join('')
+    : '<div style="color:var(--t3);font-size:12px;padding:12px 0">No entries yet. Log your first win tonight.</div>';
+}
+
+function saveWins() {
+  const today = todayKey();
+  const shipped = el('w-shipped').value.trim();
+  const forward = el('w-forward').value.trim();
+  const tomorrow = el('w-tomorrow').value.trim();
+  if(!shipped && !forward && !tomorrow) { toast('Fill in at least one field.'); return; }
+
+  const existing = winsLog.findIndex(w => w.date === today);
+  const entry = {date: today, shipped, forward, tomorrow, ts: Date.now()};
+  if(existing > -1) winsLog[existing] = entry;
+  else winsLog.unshift(entry);
+
+  sv('j6_wins', winsLog);
+  renderWins();
+  toast('Today locked in. Streak updated! 🔥');
+}
+
+// ── BIG GOALS ────────────────────────────────────
+function renderBigGoals() {
+  if(!bigGoals.length) {
+    el('big-goals-list').innerHTML = '<div style="color:var(--t3);font-size:12px;padding:12px 0">No goals yet. Add your first big goal above.</div>';
+    return;
+  }
+  el('big-goals-list').innerHTML = bigGoals.map((g, gi) => {
+    const doneSubs = (g.subgoals||[]).filter(s => s.done).length;
+    const totalSubs = (g.subgoals||[]).length;
+    const pct = totalSubs ? Math.round((doneSubs/totalSubs)*100) : 0;
+    const deadline = g.deadline ? new Date(g.deadline+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+
+    const subgoalHTML = (g.subgoals||[]).map((s, si) => `
+      <div class="sub-goal${s.done?' done':''}" onclick="toggleSubGoal(${gi},${si})">
+        <div class="sub-goal-chk">${s.done ? '✓' : ''}</div>
+        <div class="sub-goal-text">${s.text}</div>
+        <button onclick="event.stopPropagation();delSubGoal(${gi},${si})" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:12px;padding:2px 4px">✕</button>
+      </div>`).join('');
+
+    return `<div class="big-goal">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+        <div class="big-goal-name">${g.name}</div>
+        <button onclick="delBigGoal(${gi})" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:13px;flex-shrink:0">✕</button>
+      </div>
+      ${deadline ? `<div style="font-size:10px;color:var(--t3);margin-bottom:8px">Deadline: ${deadline}</div>` : ''}
+      <div class="ms" style="margin-bottom:10px">
+        <div class="ms-row"><span class="ms-name" style="font-size:11px">Progress</span><span class="ms-val">${pct}%</span></div>
+        <div class="msbar"><div class="msfill" style="width:${pct}%;background:var(--np);box-shadow:0 0 6px rgba(191,95,255,0.3)"></div></div>
+      </div>
+      ${subgoalHTML}
+      <div style="display:flex;gap:6px;margin-top:10px">
+        <input id="sg-inp-${gi}" placeholder="Add a step..." style="flex:1;font-size:13px;padding:8px 10px">
+        <button class="btn bxs bgh" onclick="addSubGoal(${gi})">Add</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleSubGoal(gi, si) {
+  bigGoals[gi].subgoals[si].done = !bigGoals[gi].subgoals[si].done;
+  sv('j6_bgoals', bigGoals);
+  renderBigGoals();
+}
+
+function delSubGoal(gi, si) {
+  bigGoals[gi].subgoals.splice(si, 1);
+  sv('j6_bgoals', bigGoals);
+  renderBigGoals();
+}
+
+function addSubGoal(gi) {
+  const inp = el('sg-inp-'+gi);
+  const text = inp.value.trim();
+  if(!text) return;
+  if(!bigGoals[gi].subgoals) bigGoals[gi].subgoals = [];
+  bigGoals[gi].subgoals.push({id: Date.now(), text, done: false});
+  sv('j6_bgoals', bigGoals);
+  renderBigGoals();
+}
+
+function delBigGoal(gi) {
+  bigGoals.splice(gi, 1);
+  sv('j6_bgoals', bigGoals);
+  renderBigGoals();
+}
+
+function openAddBigGoal() {
+  const box = el('add-goal-box');
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveBigGoal() {
+  const name = el('bg-name').value.trim();
+  if(!name) { toast('Enter a goal name.'); return; }
+  bigGoals.push({
+    id: Date.now(),
+    name,
+    target: parseFloat(el('bg-target').value) || null,
+    deadline: el('bg-deadline').value || null,
+    subgoals: []
+  });
+  sv('j6_bgoals', bigGoals);
+  el('add-goal-box').style.display = 'none';
+  el('bg-name').value = ''; el('bg-target').value = ''; el('bg-deadline').value = '';
+  renderBigGoals();
+  toast('Goal added!');
+}
+
+// ── TIME BLOCKS ──────────────────────────────────
+function renderTimeBlocks() {
+  const typeColors = {
+    grind: 'tbt-grind', content: 'tbt-content',
+    work: 'tbt-work', rest: 'tbt-rest'
+  };
+  const sorted = [...timeBlocks].sort((a,b) => a.start.localeCompare(b.start));
+
+  el('timeblocks-list').innerHTML = sorted.map(tb => {
+    const cls = typeColors[tb.type] || 'tbt-rest';
+    const typeLabel = {grind:'Grind',content:'Content',work:'Work',rest:'Rest'}[tb.type] || tb.type;
+    return `<div class="time-block">
+      <div class="tb-time">${tb.start}<br><span style="color:var(--t4)">→ ${tb.end}</span></div>
+      <div class="tb-content">
+        <div class="tb-label">${tb.label}</div>
+        <span class="tb-tag ${cls}">${typeLabel}</span>
+      </div>
+      <button onclick="delTimeBlock('${tb.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px;padding:12px 14px;align-self:stretch;border-left:1px solid var(--b2)">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function addTimeBlock() {
+  const start = el('tb-start').value;
+  const end = el('tb-end').value;
+  const label = el('tb-label').value.trim();
+  const type = el('tb-type').value;
+  if(!label || !start) { toast('Fill in time and label.'); return; }
+  timeBlocks.push({id: Date.now().toString(), start, end, label, type});
+  sv('j6_tblocks', timeBlocks);
+  el('tb-label').value = '';
+  renderTimeBlocks();
+  toast('Time block added!');
+}
+
+function delTimeBlock(id) {
+  timeBlocks = timeBlocks.filter(t => t.id !== id);
+  sv('j6_tblocks', timeBlocks);
+  renderTimeBlocks();
+}
+
+// ── WEEKLY REVIEW ────────────────────────────────
+function renderReviews() {
+  const past = [...weeklyReviews].reverse().slice(0, 12);
+  el('review-history').innerHTML = past.length
+    ? past.map(r => `<div class="win-entry" style="margin-bottom:10px">
+        <div class="win-date">Week of ${r.date}</div>
+        <div class="win-q">What worked</div><div class="win-a">${r.worked||'—'}</div>
+        <div class="win-q">What didn't</div><div class="win-a">${r.didnt||'—'}</div>
+        <div class="win-q">Instagram</div><div class="win-a">${r.ig||'—'}</div>
+        <div class="win-q">SaaS</div><div class="win-a">${r.saas||'—'}</div>
+        <div class="win-q">Finances</div><div class="win-a">${r.fin||'—'}</div>
+      </div>`).join('')
+    : '<div style="color:var(--t3);font-size:12px;padding:12px 0">No reviews yet. Do your first one this Sunday.</div>';
+}
+
+function saveWeeklyReview() {
+  const entry = {
+    date: todayKey(),
+    worked:   el('rv-worked').value.trim(),
+    didnt:    el('rv-didnt').value.trim(),
+    ig:       el('rv-ig').value.trim(),
+    saas:     el('rv-saas').value.trim(),
+    fin:      el('rv-fin').value.trim(),
+    ts: Date.now()
+  };
+  if(!entry.worked && !entry.didnt) { toast('Fill in at least 2 fields.'); return; }
+  weeklyReviews.unshift(entry);
+  sv('j6_reviews', weeklyReviews);
+  ['rv-worked','rv-didnt','rv-ig','rv-saas','rv-fin'].forEach(id => { if(el(id)) el(id).value = ''; });
+  renderReviews();
+  toast('Week reviewed and saved. Keep building.');
 }
 
 </script>
